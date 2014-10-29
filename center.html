@@ -1,0 +1,419 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>Killersites CSS layout Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!--link href="css/style.css" rel="stylesheet" type="text/css">
+        <link href="css/menu.css"  rel="stylesheet" type="text/css" media="screen">
+        <link href="css/flags.css"  rel="stylesheet" type="text/css" >
+        <link href="css/slideshow.css" rel="stylesheet" type="text/css"-->
+        <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="js/jquery.tools-1.2.8.min.js"></script>
+        <!--script type="text/javascript" src="js/jquery.tools.min.overlay1.js"></script-->
+        <script type="text/javascript" src="js/center.js"></script>
+        <script type="text/javascript" src="js/utilities.js"></script>
+
+        <!-- http://stackoverflow.com/questions/10006655/avoid-loading-jquery-multiple-times
+        -->     
+        <!--script type="text/javascript" >
+         if (typeof jQuery == 'undefined') {
+             console.log("no jquery");
+             document.write(unescape('%3Cscript js/jquery.tools-1.2.8.min.js"%3E%3C/script%3E'));
+         }   
+        </script-->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <style>
+        </style>
+
+        <!-- enable th jQuerry -->
+        <script language="javascript">
+
+            // What is $(document).ready ? See: http://flowplayer.org/tools/documentation/basics.html#document_ready
+            //***********************************************************************
+            //***********************************************************************
+            //***   jQuery(document).ready
+            //***
+            //***********************************************************************
+            //***********************************************************************
+            jQuery(document).ready(function($) {
+                /*
+                alert('Doc ready in center');
+                if (!blog.isFirstLoad(blog.center, "js/jquery-1.11.0.min.js")) {
+                    alert('in center  Doc ready --> is Loaded before');
+                    return;
+                }
+                else
+                    alert('in center Doc ready --> is not Loaded before');
+                */
+                $("#selectFColor").change(function() {
+                    var str = "";
+                    $("#selectFColor option:selected").each(function() {
+                        str += $(this).val() + " ";
+                    });
+                    $('#selectFColorId').css('background-color', $(this).val());
+                })
+                        .trigger("change");
+
+                try {
+                    //***********************************************************************
+                    //****  Func: fillOneDopdownList
+                    //***********************************************************************
+                    window.selectedGalleryItemId = "";
+                    /*
+                     post_data = {'pid': '10', 'pname': 'all'};
+                     $.ajax({
+                     url: 'php/getsectiontext.php',
+                     type: "POST", async: false, data: post_data, datatype: 'json',
+                     //Ajax events
+                     success: function(data) {
+                     var obj = jQuery.parseJSON(data);
+                     if (obj.status == true) {
+                     // alert('obj.outarray:  '+obj.outarray);
+                     $.each(obj.outarray, function(index, val) {
+                     
+                     //console.log(val.pid);
+                     $("#" + val.name).html(val.text);
+                     $("#" + val.name).val(val.font);
+                     $("#" + val.name).val(val.fontsize);
+                     $("#" + val.name).val(val.fontweight);
+                     $("#" + val.name).val(val.color);
+                     });
+                     }
+                     else {
+                     alert('Error reading sectiontext table, please contact admin: \n' + obj.rtntxt);
+                     }
+                     }, //Ajax events
+                     error: function(xhr, status, error) {
+                     alert(error);
+                     }
+                     });*/
+                    // alert('getsection all');
+                    getsectiontext(GetProjectId(), 'all');
+                    getsectionhead(GetProjectId(), 'all');
+                    /*
+                     post_data = {'pid': '10', 'pname': 'all'};
+                     $.ajax({
+                     url: 'php/getsectionhead.php',
+                     type: "POST", async: false, data: post_data, datatype: 'json',
+                     //Ajax events
+                     success: function(data) {
+                     var obj = jQuery.parseJSON(data);
+                     if (obj.status == true) {
+                     //alert('obj.outarray:  '+obj.outarray);
+                     $.each(obj.outarray, function(index, val) {
+                     //console.log(val.pid);
+                     $("#"+val.name).html(val.text);
+                     $('#selectFont').val(val.font);
+                     $('#selectFSize').val(val.fontsize);
+                     $('#selectFWeight').val(val.fontweight);
+                     $('#selectFColor').val(val.color);
+                     });
+                     }
+                     else {
+                     alert('Error reading sectionhead table, please contact admin: \n' + obj.rtntxt);
+                     }
+                     }, //Ajax events
+                     error: function(xhr, status, error) {
+                     alert(error);
+                     }
+                     });
+                     */
+                } catch (e) {
+                    alert("124 exception:" + e);
+                }
+
+                //******************************************
+                /*var triggers = $(".modalInput").overlay({
+                 // some mask tweaks suitable for modal dialogs
+                 mask: {
+                 color: '#ebecff',
+                 loadSpeed: 200,
+                 opacity: 0.9
+                 },
+                 closeOnClick: false,
+                 api: true
+                 });*/
+
+                //function a() { alert(123); } 
+                function a(str) {
+                    alert(str);
+
+                }
+                //** *************************************************
+                //** Function: 
+                //**
+                //** *************************************************
+                window.a = a;
+                 $("#target").submit(function(e) {
+                  if(window.loadOverlay<1){    
+                 alert('submit:  '+window.selectedGalleryItemId+"  target.submit  ");
+                 //$('section1').html(); 
+                 //alert(' btnSave form===>' + $('#section1').val() +'   btnSave form selectFont'+$('#selectFont').val());
+                // alert('target btnSave form id: ' + $(this).parent().attr('id'));
+                // alert('#selectFont:    ' + changeFirstCharecter($('#selectFont').val()));
+                 $('#' + window.selectedGalleryItemId).css('font-size', $('#selectFSize').val() + 'px');
+                 $('#' + window.selectedGalleryItemId).css('color'     , $('#selectFColor').val());
+                 $('#' + window.selectedGalleryItemId).css("font-family", changeFirstCharecter($('#selectFont').val()));
+                 $('#' + window.selectedGalleryItemId).css("font-weight", $('#selectFWeight').val());//$('#selectFWeight').val()
+                 var itemId=window.selectedGalleryItemId;
+                 if(itemId.indexOf("Head")>=0){
+                 saveSectionHead(window.selectedGalleryItemId);
+                 alert('saveSectionHead id : '+window.selectedGalleryItemId.toLowerCase());
+                 }   
+                 else{
+                 alert('saveSectionText id : '+window.selectedGalleryItemId.toLowerCase()); 
+                 saveSectionText(window.selectedGalleryItemId);
+                 }   
+                 
+                 closeModal();
+                 window.selectedGalleryItemId = "";
+                  }
+                 return e.preventDefault();
+                 
+                 });
+                /*** ************************************************************ ***
+                 ***
+                 *** 
+                 *** ************************************************************ ***/
+                /*$("#btnSave form").submit(function(e) {
+                 //alert(' btnSave form' + $('#section1').val()+' selectFont'+$('#selectFont').val());
+                 alert('btnSave form selectFont' + $('#selectFont').val());
+                 // close the overlay
+                 triggers.eq(1).overlay().close();
+                 // get user input
+                 var input = $("input", this).val();
+                 // do something with the answer
+                 triggers.eq(1).html(input);
+                 // do not submit the form
+                 return e.preventDefault();
+                 
+                 });*/
+                /*** ************************************************************ ***/
+                $(".firstsection, .firstsectionhedder").on("click", function() {
+                    a('text click');
+                });
+                /*** ************************************************************ ***/
+                /*$(".slidetabs").tabs(".images > div", {
+                 //enable the "crass-fading" effect
+                 effect: 'fade',
+                 fadeOutSpeed: "slow",
+                 // start from the befinning after the last tab
+                 rotate: true
+                 //use the slideshow plugin. It accepts its own configuration 
+                 }).slideshow();*/
+            });
+            /*** ************************************************************ ***/
+            /*$(".modalInput").live('click', function(e) {
+             //alert(".modalInput    367"    );
+             var id = $(this).attr('id');
+             //var text= $(this).attr('id').html();
+             window.selectedGalleryItemId = id;
+             //alert('open modal modalInput id :' + id);
+             if(id.indexOf("Head")>=0)
+             getsectionhead(GetProjectId(),window.selectedGalleryItemId);
+             else
+             getsectiontext(GetProjectId(),window.selectedGalleryItemId);
+             openModal('prompt', $(this).attr('id'));
+             
+             e.preventDefault();
+             });*/
+
+            /* $("p[rel]").live('click', function(e) {
+             alert("p[rel]:"+$(this).attr('id'));
+             
+             e.preventDefault();
+             });*/
+            /*** ***************************************************************
+             * @param {type} divName
+             * @param {type} itemId
+             * @returns {undefined}
+             **** **************************************************************/
+            /*var currentModal;
+             function openModal(divName, itemId) {
+             closeModal();
+             alert('openModal   393:  divName:  '+divName+'    itemId: '+itemId);
+             if ($('#' + divName).length > 0) {
+             currentModal = $('#' + divName).overlay({
+             mask: {color: '#00ff00'},
+             top: '0px',
+             api: true
+             }).load();
+             
+             }
+             
+             }*/
+            /*** ************************************************************ ***
+             *** 
+             *** @returns {undefined}
+             *** ************************************************************ ***/
+            function closeModal() {
+             if (currentModal) {
+                if (currentModal.isOpened) {
+                    currentModal.close();
+                    alert('inside closeModal');
+                }
+             }
+             //$('#openButton').removeAttr('disabled');
+             }
+            /*** ************************************************************ ***/
+            //fillDopdownList();
+            /*fillOneDopdownList('font', '#selectFont', '');
+             fillOneDopdownList('fontcolor', '#selectFColor', '');
+             fillOneDopdownList('fontsize', '#selectFSize', '');
+             fillOneDopdownList('fontweight', '#selectFWeight', '');
+         
+             */
+            $( "#target1" ).click(function() {
+              var cc=$("#bgcolorid").val();
+              console.log('#target1:Color  '+cc);
+              //alert( "Handler for .click() called." +cc);
+                $('content').css("background", cc);
+            }); 
+            $( "#target2" ).click(function() {
+              var cc=$("#bgcolorid2").val();
+              console.log('#targe2:Color  '+cc);
+                $('.colwrapper').css("background-color", cc);
+                $('.ltcol').css("background-color", cc);
+                 $('#left_first_vertical_nav li a.sub ').css("background-color", cc);
+                
+            });
+            $( "#target3" ).click(function() {
+              var cc=$("#bgcolorid3").val();
+              console.log('#target3:Color  '+cc);
+             // alert( "Handler for .click() mainHeader called.target3 : " +cc);
+              $(' .mainHeader nav ').css("background-color", cc);
+            });
+            $( "#target4" ).click(function() {
+              var cc=$("#bgcolorid4").val();
+              console.log('#target4:Color  '+cc);
+              //alert( "Handler for .click() mainHeader called.target4 : " +cc);
+               $('header div.header_box ').css("background-color", cc);
+            }); 
+            $( "#target5" ).click(function() {
+              var cc=$("#bgcolorid5").val();
+              console.log('#target5:Color  '+cc);
+              //alert( "Handler for .click() mainHeader called.target4 : " +cc);
+              $('footer section').css("background-color", cc);
+              $('footer').css("background-color", cc);
+            });
+        </script>
+    </head>
+    <body>
+      
+        <div class="ctcol">
+            <!--- Container for slids -->
+
+            <div class="images">
+                <!--- First slide --->
+<!--div class="bla"   style="height: 10%; z-index:2000;  width: 10% ; background-color: red"> </div-->
+            
+                <div>
+                    <!--- First slide --->
+                    <img src="images/url.jpeg" width="740" height="250" alt="image1">
+                </div>    
+                <div>
+                    <!--- Secound slide --->
+                    <img src="images/killerfrog2.jpg" width="740" height="250" alt="image1">
+                </div>    
+                <div> <!--- third slide --->
+                    <img src="images/killerfrog3.jpg" width="740" height="250" alt="image1">
+                </div>  
+                <!-- The tab -->
+            </div>
+            <div class="slidetabs">
+                <a href="#"></a>
+                <a href="#"></a>
+                <a href="#"></a>
+            </div>
+           
+            <div>
+                <article>
+                    <h2 id='row1Head' class="modalInput" >Loclassrem ipsum</h2> 
+                    <!--p id='row1' class="modalInput" >dolor sit amet consectetur adipiscing elit. Nulla id nulla risus, vitae consequat dui. Quisque vehicula tellus sed nisl feugiat adipiscing ut in neque. Nullam id sapien eget diam ullamcorper tempus a pharetra enim. Nam at ligula ligula. Maecenas turpis nunc, suscipit et viverra in, cursus eget tortor. Aenean mollis adipiscing est. Cras elementum blandit tincidunt. Aliquam at semper lacus. Etiam hendrerit lacinia mauris, vel fermentum risus venenatis ultrices. Aenean fringilla est interdum metus tempor facilisis ultrices a metus. Sed sit amet tortor sit amet nulla molestie vestibulum. Praesent id sem a libero fermentum volutpat. Maecenas pharetra neque eu leo interdum hendrerit. Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus. Integer molestie turpis id est ultricies vel commodo magna viverra. Nunc gravida fermentum placerat. Duis lorem augue, tincidunt blandit vehicula quis, aliquam nec tellus.</p-->
+                    <p id='row1' class="modalInput" >1  dolor sit amet consectetur adipiscing elit. Nulla id nulla risus, vitae consequat dui. Quisque vehicula tellus sed nisl feugiat adipiscing ut in neque. Nullam id sapien eget diam ullamcorper tempus a pharetra enim. Nam at ligula ligula. Maecenas turpis nunc, suscipit et viverra in, cursus eget tortor. Aenean mollis adipiscing est. Cras elementum blandit tincidunt. Aliquam at semper lacus. Etiam hendrerit lacinia mauris, vel fermentum risus venenatis ultrices. Aenean fringilla est interdum metus tempor facilisis ultrices a metus. Sed sit amet tortor sit amet nulla molestie vestibulum. Praesent id sem a libero fermentum volutpat. Maecenas pharetra neque eu leo interdum hendrerit. Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus. Integer molestie turpis id est ultricies vel commodo magna viverra. Nunc gravida fermentum placerat. Duis lorem augue, tincidunt blandit vehicula quis, aliquam nec tellus.</p>
+
+                    <h3 id='row2Head' class="modalInput" >A Sub Headkillerline</h3> 
+                    <p id='row2' class="modalInput" >dolor sit amet consectetur adipiscing elit. Nulla id nulla risus, vitae consequat dui. Quisque vehicula tellus sed nisl feugiat adipiscing ut in neque. Nullam id sapien eget diam ullamcorper tempus a pharetra enim. Nam at ligula ligula. Maecenas turpis nunc, suscipit et viverra in, cursus eget tortor. Aenean mollis adipiscing est. Cras elementum blandit tincidunt. Aliquam at semper lacus. Etiam hendrerit lacinia mauris, vel fermentum risus venenatis ultrices. </p>
+
+                    <h3 id='row3Head' class="modalInput" >Another Sub Headline</h3> 
+                    <p id='row3' class="modalInput" >dolor sit amet consectetur adipiscing elit. Nulla id nulla risus, vitae consequat dui. Quisque vehicula tellus sed nisl feugiat adipiscing ut in neque. Nullam id sapien eget diam ullamcorper tempus a pharetra enim. Nam at ligula ligula. Maecenas turpis nunc, suscipit et viverra in, cursus eget tortor. Aenean mollis adipiscing est. Cras elementum blandit tincidunt. Aliquam at semper lacus. Etiam hendrerit lacinia mauris, vel fermentum risus venenatis ultrices.Sed sit amet tortor sit amet nulla molestie vestibulum. Praesent id sem a libero fermentum volutpat. Maecenas pharetra neque eu leo interdum hendrerit. Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus. Integer molestie turpis id est ultricies vel commodo magna viverra. Nunc gravida fermentum placerat. Duis lorem augue, tincidunt blandit vehicula quis, aliquam nec tellus. </p>
+
+                    <section class="leftfloat">
+                        <h3  id='row4SecLeftHead' class="modalInput" >nested left section</h3>
+                        <p id='row4SecLeft' class="modalInput" >Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus. Integer molestie turpis id est ultricies vel commodo magna viverra. Nunc gravida fermentum placerat. Duis lorem augue, tincidunt blandit vehicula quis, aliquam nec tellus.</p>
+                    </section>
+
+                    <section class="rightfloat">
+                        <h3 id='row4SecRightHead' class="modalInput" >nested right section</h3>
+                        <p id='row4SecRight' class="modalInput" >Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus. Integer molestie turpis id est ultricies vel commodo magna viverra. Nunc gravida fermentum placerat. Duis lorem augue, tincidunt blandit vehicula quis, aliquam nec tellus.</p>
+                    </section>
+
+                    <h3 id='row5Head' class="modalInput" >Another Sub Headline</h3> 
+                    <p  id='row5' class="modalInput" >dolor sit amet consectetur adipiscing elit. Nulla id nulla risus, vitae consequat dui. Quisque vehicula tellus sed nisl feugiat adipiscing ut in neque. Nullam id sapien eget diam ullamcorper tempus a pharetra enim. Nam at ligula ligula. Maecenas turpis nunc, suscipit et viverra in, cursus eget tortor. Aenean mollis adipiscing est. Cras elementum blandit tincidunt. Aliquam at semper lacus. Etiam hendrerit lacinia mauris, vel fermentum risus venenatis ultrices.Sed sit amet tortor sit amet nulla molestie vestibulum. Praesent id sem a libero fermentum volutpat. Maecenas pharetra neque eu leo interdum hendrerit. Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus. Integer molestie turpis id est ultricies vel commodo magna viverra. Nunc gravida fermentum placerat. Duis lorem augue, tincidunt blandit vehicula quis, aliquam nec tellus. </p>
+                </article>   
+            </div>
+            
+            <!-- --------------------------------------- -->
+            <table class="texttable" border="1" >
+                <tr>
+                    <td>
+                        <div id="target1">Main Div</div>
+                    </td> 
+                    <td>
+                        <div id="other">
+                         <input type="text" id="bgcolorid" value="#0000ff">
+                        </div>
+                   </td> 
+                </tr>
+                <tr>
+                    <td>
+                        <div id="target2">Vertical menu</div>
+                    </td> 
+                    <td>
+                        <div id="other2">
+                         <input type="text" id="bgcolorid2" value="#bababa">
+                        </div>
+                   </td> 
+                </tr>
+                <tr>
+                    <td>
+                        <div id="target3">horizontal menu</div>
+                    </td> 
+                    <td>
+                        <div id="other3">
+                         <input type="text" id="bgcolorid3" value="#ff0000">
+                        </div>
+                   </td> 
+                </tr>
+                <tr>
+                    <td>
+                        <div id="target4">Header</div>
+                    </td> 
+                    <td>
+                        <div id="other4">
+                         <input type="text" id="bgcolorid4" value="#00ff00">
+                        </div>
+                   </td> 
+                </tr>
+            <tr>
+                    <td>
+                        <div id="target5">Footer</div>
+                    </td> 
+                    <td>
+                        <div id="other5">
+                         <input type="text" id="bgcolorid5" value="#0f0f0f">
+                        </div>
+                   </td> 
+                </tr>
+            </table>
+        </div><!--colwrapper-->
+        <!--script type="text/javascript" src="js/center.js"></script>
+        <script>
+             getsectiontext(GetProjectId(),'all');
+                    getsectionhead(GetProjectId(),'all');
+        </script-->    
+    </body>
+</html>

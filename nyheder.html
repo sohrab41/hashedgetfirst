@@ -1,0 +1,709 @@
+<!DOCTYPE HTML>
+<?php
+session_start();
+$user= $_SESSION["userType"];
+?>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>SlideShow</title>
+        <!-----------------------new--------------------------->
+        <meta charset="utf-8">
+        <title>jQuery UI Accordion - Sortable</title>
+
+        <link rel="stylesheet" href="css/jquery-ui.1.10.3.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css" >
+        <link rel="stylesheet" type="text/css" href="css/menu.css">
+        <link rel="stylesheet" type="text/css" href="css/flags.css"  >
+
+        <script type="text/javascript"   src="js/jquery.tools-1.2.8.min.js"></script>
+        <script type="text/javascript"   src="js/jquery-ui.1.10.4.min.js"></script>
+
+        <script type="text/javascript" src="js/jquery.session.js"></script>                                         
+        <script type="text/javascript"   src="js/utilities.js"></script>
+        <script type="text/javascript"   src="js/nyheder.js"></script>    
+        <script type="text/javascript"   src="js/login.js"></script>
+
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <style>
+            .search_box{
+                display: none;
+            }
+            .maincontent { margin-left:195px; height:1175px; /*background:#f20;*/}
+            h3.modalInput{
+                height: 15px;
+            }
+            p.modalInput{
+                height: 15px;
+            }
+            p.hiddenItemSaveType{
+                /* display: none;*/
+            }
+            .typeOfUser{
+                color:white;
+            }
+        #fotterCol1Head, #fotterCol2Head, #fotterCol3Head{
+                height:25px; 
+                display: block;
+                text-align: center;
+                /*background-color:blue;*/
+            } 
+            
+            #fotterCol1,#fotterCol2,#fotterCol3{
+                text-align: center;
+            } </style>
+        <script language="javascript">
+            jQuery(window).load(function() {
+                var typeOfUser = $.session.get('userType');
+                //alert(' loaded   nyheder   typeOfUser: ' + typeOfUser);
+                if (typeOfUser === 'admin')
+                    $(".typeOfUser").text(typeOfUser);
+                else {
+                    $(".typeOfUser").text('');
+                    $("#uploadNavHorizantal").css('display', 'none');
+                    $("#uploadNavVertical").css('display', 'none');
+                    $("#createNyhed").css('display', 'none');
+                }
+            });
+            jQuery(document).ready(function($) {
+                var typeOfUser = "";
+
+                // Press Cretae new news 
+                $('#createNyhed').click(function() {
+                    jQuery('#accordion').html('');
+                    // remove selected item from dropdown //
+                    $(".modal h2.ModalDialogHeader").text('');//initialize
+                    $("#infoTextHeader b").remove();
+                    $("#infoTextHeader").append("<b id='headerText'>Nyhed Header</b>");
+                    $("#infoTextBody b").remove();
+                    $("#infoTextBody").append("<b id='bodyText'>Nyhed Text</b>");
+                    $("#btnSaveHeader").css("display", "none");
+                    $("#btnDeleteHeader").css("display", "none");
+                    $("#btnCloseHeader").css("display", "none");
+                    $('#selectFColorId').css('background-color', $(this).val());
+                    $("#selectFColorId").css('background-color', "lightgray");
+                    $("#selectBgColorId").css('background-color', "lightgray");
+                    $("#selectFColorTextId").css('background-color', "lightgray");
+                    $("#selectBgColorTextId").css('background-color', "lightgray");
+                    $(".textTableBody").show();
+                    $(".textTableHeader").show();
+
+                    $("#section1").val('');
+                    $('#selectFont').val('');
+                    $('#selectFSize').val('');
+                    $('#selectFWeight').val('');
+                    $('#selectFColor').val('');
+                    $("#selectBgColor").val('');
+
+                    //This is used for indication of insert or update 
+                    $("p.hiddenItemSaveType").html('insert');
+                    // $("#btnCloseHeader").css("display", "none");
+                    $(".modal h2.ModalDialogHeader").text('Insert nyhead dialog');
+                    $("div.hiddenItem").text('');//Selected Item is null
+                    openModal('prompt', '');
+                    // alert(  $( "p.hiddenItemSaveType" ).html());
+                    return false;
+                });
+                $('div div div ul#left_first_vertical_nav li a').click(function() {
+                    // alert('40');
+                    showmenupage($(this));
+                    return false;
+                });
+                function showmenupage(obj) {
+                    var page = obj.attr('href');
+                    $('content').css("width", "940px");
+                    $('.header_box').css("width", "940px");
+                    window.location.href = page + '.html';
+                    if (page === 'gallerydb' || page === 'gallery') {
+                        $('content').css("width", $(window).width() + "px");
+                        $('.header_box').css("width", $(window).width() + "px");
+                        console.log('index Horiz: gallerydb');
+                        $('.ltcol').css('display', 'none');//ltcol
+                        $('div.search_box').css('left', '1800px');
+                        console.log('bla: ' + $('div.search_box').css('left'));
+                    }
+                    else
+                        $(".ltcol").show();
+                }
+                $('ul.nav_pull_left li a').click(function() {
+                    showmenupage($(this));
+                    return false;
+                    //$('#containt').load(page + '.html');
+                });
+                //____________________Center__________________________
+                // Chang background color of  color dropdown
+                $("#selectFColor").change(function() {
+                    // alert("bla");
+                    var str = "";
+                    $("#selectFColor option:selected").each(function() {
+                        str += $(this).val() + " ";
+                    });
+                    $('#selectFColorId').css('background-color', $(this).val());
+                }).trigger("change");
+
+                // Chang background color of bgcolor dropdown id: selectBgColor
+                $("#selectBgColor").change(function() {
+                    //alert("selectBgColor change");
+                    var str = "";
+                    $("#selectBgColor option:selected").each(function() {
+                        str += $(this).val() + " ";
+                    });
+                    $('#selectBgColorId').css('background', $(this).val());
+                }).trigger("change");
+
+
+
+
+                // Chang background color of bgcolor dropdown id: selectBgTextColor
+                $("#selectBgTextColor").change(function() {
+                    //alert("selectBgColor change");
+                    $('#selectBgColorTextId').css('background', $(this).val());
+                }).trigger("change");
+
+
+                // Chang background color of bgcolor dropdown id: selectTextFColor
+                $("#selectTextFColor").change(function() {
+                    //alert("selectBgColor change");
+                    $('#selectFColorTextId').css('background', $(this).val());
+                }).trigger("change");
+
+                try {
+                    //*******************************
+                    //****  
+                    //*******************************
+                    window.selectedGalleryItemId = "";
+                    getnyhedsection(GetProjectId(), 'all');
+                } catch (e) {
+                    alert("exception:" + e);
+                }
+
+                //***********************************
+                /* function a(str) {
+                 alert(str);
+                 }*/
+
+                /*** *********************************** ***
+                 *** 
+                 *** @returns {undefined}
+                 *** ************************************ ***/
+                function closeModal() {
+                    if (currentModal) {
+                        if (currentModal.isOpened) {
+                            currentModal.close();
+                            $("p.hiddenItemSaveType").html('');
+                        }
+
+                    }
+                }
+                /*** ************************************ ***/
+                fillNewsDopdownList('bgcolor');
+                $(".firstsection, .firstsectionhedder").on("click", function() {
+                    // alert(' nyhed_new 152 text click');
+                });
+                /*** ******************* ***/
+                $(".slidetabs").on("click", function() {
+                    // a('slidetabs');
+                });
+                /*** ******************* ***/
+                $(".close").on("click", function() {
+                    // alert('close');
+                });
+                /*** ************************************** ***/
+                /*** Function delete section:               ***/
+                /***  div.hiddenItem saved at dblclick      ***/
+                /*** ************************************** ***/
+                $(".delete").on("click", function() {
+                    // alert('div.hiddenItem:  ' + $('div.hiddenItem').text());
+
+                    if ($("div.hiddenItem").text().length === 0) {
+                        emptyModalDialogFiels();
+                        //  alert('div.hiddenItem  empty:  ' + $('div.hiddenItem').text());
+                    }
+
+                    if ($('div.hiddenItem').text().indexOf("Head") > 0) {
+                        var headId = $('div.hiddenItem').text();
+                        var textId = headId.replace('Head', 'Text');
+                        // alert('headId:  ' + headId + '          textId: ' + textId);
+                    }
+                    else {
+                        var textId = $('div.hiddenItem').text();
+                        var headId = textId.replace('Text', 'Head');
+                        //alert('headId:  ' + headId + '          textId: ' + textId);
+                    }
+                    deleteNyhedSection(headId, textId);
+                    $('div.hiddenItem').text('');
+                    closeModal();
+                    emptyModalDialogFiels();
+                    location.reload();
+                });
+                /*** ******************* ***/
+                $(".modalInput").dblclick(function() {
+                    //alert("modalInput    typeOfUser          "+$(".typeOfUser").text());
+                    if ($(".typeOfUser").text() === 'admin') {
+                        $("#headerText").remove();
+                        $(".textTableBody").css("display", "none");
+                        $("#btnSaveHeader").show();
+                        $("#btnDeleteHeader").show();
+                        $("#btnCloseHeader").show();
+                        $(".textTableHeader").show();
+                        $(".modal h2.ModalDialogHeader").text('');//initialize
+
+                        var id = $(this).attr('id');
+                        if (id.indexOf("fotter") >= 0)
+                            return;
+                        window.selectedGalleryItemId = id;
+                        $('div.hiddenItem').text(id);
+                        openModal('prompt', $(this).attr('id'));
+                        var type = "";
+                        if (id.indexOf("Head") > 0) {
+                            type = "Head";
+                            $("#infoTextHeader").html();
+                            $(".modal h2.ModalDialogHeader").text('Update nyhead header dialog');
+                            $("#infoTextHeader").append("<b id='headerText'>Nyhed Header Text</b>");
+                        }
+                        else {
+                            type = "Text";
+                            $(".modal h2.ModalDialogHeader").text('Update nyhead text dialog');
+                            $("#infoTextBody b").remove();
+                            $("#infoTextBody").append("<b id='bodyText'>Nyhed Text</b>");
+                        }
+                        filloverlayfields(GetProjectId(), $(this).attr('id'), type);
+                        console.log("Handler for .dblclick() called. nyheder.html 174 id: " + id);
+                    }
+                });
+
+                //** ********************************
+                //** Submit news form for saving 
+                //**
+                //** ********************************
+                $("#target").submit(function(e) {
+                    //alert('submit    ' + $("p.hiddenItemSaveType").html() + ' window.selectedGalleryItemId: ' + window.selectedGalleryItemId);
+
+                    //*** Insert new news ***/
+                    if ($("p.hiddenItemSaveType").html() === 'insert') {
+                        CreateANews();
+                        closeModal();
+                        //alert('258 nyheder.html insert pressed');
+                    }
+                    else { // Update changed news
+                        //alert('update pressed');
+                        $('#' + window.selectedGalleryItemId).css('font-size', $('#selectFSize').val() + 'px');
+                        $('#' + window.selectedGalleryItemId).css("font-family", changeFirstCharecter($('#selectFont').val()));
+                        $('#' + window.selectedGalleryItemId).css("font-weight", $('#selectFWeight').val());
+                        $('#' + window.selectedGalleryItemId).css('color', $('#selectFColor').val());
+                        $('#' + window.selectedGalleryItemId).css("background", $('#selectBgColor').val());
+
+                        var itemId = window.selectedGalleryItemId;
+                        var item = itemId + 'div';
+                        $('#' + item).css("background", $('#selectBgColor').val());
+
+                        if (itemId.indexOf("Head") >= 0) {
+                            // alert('saveNyhedSectionHead id : ' + window.selectedGalleryItemId.toLowerCase());
+                            saveNyhedSectionHead(window.selectedGalleryItemId.toLowerCase());
+                        }
+                        else {
+                            //alert('before savenyhedSectionText id : ' + window.selectedGalleryItemId.toLowerCase());
+                            saveNyhedSectionText(window.selectedGalleryItemId);
+                        }
+                        closeModal();
+                    }
+                    window.selectedGalleryItemId = "";
+
+                    return e.preventDefault();
+
+                });
+
+
+                $("#btnClose").click(function() {
+                    // alert("button");
+                    location.reload();
+                    //return e.preventDefault();
+                });
+
+                /*** ************************************************************ ***
+                 * @param {type} pid
+                 * @param {type} pname
+                 * @returns {getsectionhead}             
+                 *** ************************************************************ ***/
+                function getsectiontext1(pid, pname) {
+                    try {
+                        //alert("getsectiontext");
+                        post_data = {'pid': pid, 'pname': pname};
+                        $.ajax({
+                            url: 'php/getsectiontext.php',
+                            type: "POST", async: false, data: post_data, datatype: 'json',
+                            //Ajax events
+                            success: function(data) {
+                                var obj = jQuery.parseJSON(data);
+                                //alert(data);
+                                if (obj.status === true) {
+                                    //alert('obj.outarray:  obj.status === true  '+obj.outarray);
+                                    $.each(obj.outarray, function(index, val) {
+                                        alert('!!!!! name: ' + val.name + ' \n fontsize: ' + val.fontsize + " \n val.text: " + val.text);
+                                        $("#" + val.name).html(val.text);
+                                        /*$("#" + val.name).val('val.text');*/
+                                        $('#' + val.name).css('font-size', val.fontsize + 'px');
+                                        $("#" + val.name).css('color', val.color);
+                                        $("#" + val.name).css("font-family", changeFirstCharecter(val.font));
+                                        $("#" + val.name).css("font-weight", val.fontweight);//$('#selectFWeight').val()
+
+                                    });
+                                }
+                                else {
+                                    alert('Error reading sectiontext table, please contact admin: \n' + obj.rtntxt);
+                                }
+                            }, //Ajax events
+                            error: function(xhr, status, error) {
+                                alert('error in utilities.js getsectiontext(' + pid + ', ' + pname + ')');
+                            }
+                        });
+
+
+                    } catch (e) {
+                        alert("exception in getsectiontext(" + pid + ", " + pname + "):" + e);
+                    }
+                }
+
+                try {
+                    window.selectedGalleryItemId = "";
+                    getsectionhead(GetProjectId(),'fotterCol1Head');// 'all');//
+                    getsectiontext(GetProjectId(), 'fotterCol1');// 'fotterCol1');
+                    getsectionhead(GetProjectId(),'fotterCol2Head');// 'all');//
+                    getsectiontext(GetProjectId(), 'fotterCol2');// 'fotterCol1');
+                    getsectionhead(GetProjectId(),'fotterCol3Head');// 'all');//
+                    getsectiontext(GetProjectId(), 'fotterCol3');// 'fotterCol1');
+
+
+                } catch (e) {
+                    alert("index.html addFrontDivsSlideTabs() exception:" + e);
+                }
+
+
+            });//Ready 
+            //_-_-_-_-__-_-_-_-__-_-_-_-__-End Center_-_-_-_-__-_-_-_-__-_-_-_-_
+            var triggers = $(".modalInput").overlay({
+                // some mask tweaks suitable for modal dialogs
+                mask: {
+                    color: '#ebecff',
+                    loadSpeed: 200,
+                    opacity: 0.9
+                },
+                closeOnClick: false,
+                api: true
+            });
+
+
+        </script>
+
+        <!--------------------------accordion-------------------------->        
+        <style>
+            #accordion-resizer {
+                padding: 0px;
+                width:  98%; 
+                /* height: 40%; */
+            }
+            h3{
+                height: 20px; 
+            }
+            #createNyhed{
+                float:right; 
+                margin-right: 10px;
+                height: 30px; 
+                width:100px;
+
+            }
+            #titeltextdiv{
+                color:#FFF; 
+                font-size:200%; 
+                margin-left:30%; 
+                margin-top:15px;
+            }
+        </style>
+        <script>
+            $(function() {
+                // alert("#accordion_1234");
+                $("#accordion").accordion({
+                    heightStyle: "content", //autoheight = false => can change height of accordion   
+                    //heightStyle: "fill"
+                });
+            });
+            $(function() {
+                //alert("#accordion-resizer");
+                $("#accordion-resizer").resizable({
+                    //minHeight: 140,
+                    //minWidth: 200,
+                    closeOnClick: false,
+                    collapsible: true,
+                    autoHeight: false,
+                    navigation: true,
+                    //heightStyle: "fill",
+                    heightStyle: "content", //autoheight = false => can change height of accordion
+                    resize: function() {
+                        $("#accordion").accordion("refresh");
+                    }
+                });
+            });
+
+        </script>
+        <!---------------------------------------------------->        
+
+    </head>
+    <body>	
+    <content>
+        <header>
+            <div class="header_box">
+                <a  id="logo"></a>
+                <div id="titeltextdiv">
+                    <h2>Susanne Egfjord</h2>
+                </div>
+                <!--******   search box    ******-->	   
+
+                <!--div class="search_box">
+                    <div id="search_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <input id="search_box_input_username" class="textfield" type="text" name="username" value="">
+                            <button class="button_search" type="submit">
+                              
+                            </button>
+                            <div id="search_box_div_select">
+                                <select id="search_box_select" name="SectionId">
+                                    <option value="">Alle kategorier</option>
+                                    <option value="1">Spil</option>
+                                    <option value="3">Hardware</option>
+                                    <option value="4">Software</option>
+                                    <option value="5">Forbrugerelektronik</option>
+                                    <option value="6">Husholdningsvarer</option>
+                                    <option value="7">Leg & Gadgets</option>
+                                </select>
+                                <a href="/dk-da/sok/" title="Avanceret søgning">Avanceret søgning</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div-->
+
+                <!--******   login    ******-->	
+                <!--div id="login_box">
+                    <div id="login_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <label id="login_box_top_label_medlem">Medlem</label>
+                            <input id="login_box_input_username" class="textfield" type="text" name="username" value="">
+                            <input id="login_box_input_password" class="textfield" type="password" name="password" value="">
+                            <button class="button_s16" type="submit">
+                                <div>
+                                    <div>
+                                        Login
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="login_box_bottom">
+                        <ul>
+                            <li><a href="#" ></a></li>
+                            <li><a href="#" ></a></li>
+                            <li><a href="/dk-da/bli_medlem" class="login_box_blev_medlem">Bliv medlem</a></li>
+                            <li><a href="/dk-da/info/medlem/glomt_losenord">Glemt adgangskode?</a></li>
+                        </ul>
+                    </div>
+                </div-->
+            </div>
+            </div>
+        </header>
+        <!--******   menu line left/right    ******-->	
+        <header class="mainHeader">
+            <nav>
+                <ul class="nav_pull_left">
+                    <li><a href="index">Forside</a></li>
+                    <li><a href="gallery-ny">Galleri</a></li>
+                    <li><a href="nyheder">Nyheder</a></li>
+                    <!--li><a href="inspiration">Inspiration</a></li-->
+                    <!--li><a href="gallerydb">Gallerydb</a></li-->
+                    <li id="uploadNavHorizantal"><a href="upload">Upload</a></li>
+                    <li><a href="contact" >Kontakt</a></li>
+                    </a></li>
+                </ul>
+                <ul class="nav_pull_right">
+                    <li class="usertype" > <p class="typeOfUser"></p></li>
+                    <!--li class="region-sweden"  id="se"> <a class="sweden"  href="#"></a></li-->
+                    <li class="region-denmark" id="dk"> <a class="denmark" href="#"></a></li>		
+                </ul>
+            </nav>
+        </header><!--class="mainHeader-->
+
+
+        <div class="colwrapper"  style="height:100%;width:100px;float:left;">
+            <div class="ltcol"  >
+                <!-- Left -->
+                <div id="left_first_vertical_nav_div" >
+                    <ul id="left_first_vertical_nav">
+                        <li><a href="index">Forside</a></li>
+                        <li><a href="gallery-ny" class="sub" tabindex="1">Galleri</a></li>
+                        <li><a href="nyheder">Nyheder</a></li>
+                        <li  id="uploadNavVertical"><a href="upload">Upload</a></li>
+                        <li><a href="contact">Kontakt</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="maincontent" >
+
+            <!--------------------- Center --------------------->
+
+            <div id="accordion-resizer"  class="ui-widget-content">
+                <div id="accordion" >
+                    <!--h3 style="height:15px;" id='nyhedHeadRow1' class="modalInput"  rel="#prompt">Section 1</h3>
+                    <div>
+                        <p  id="nyhedTextRow1" class="modalInput"  rel="#prompt">Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                        </p>
+                    </div>
+                    <h3 id="nyhedHeadRow2"  class="modalInput" rel="#prompt">Section 2</h3>
+                    <div height="10px" style="height:10px;" >
+                        <p style="height:10px" id="nyhedHeadRow2" class="modalInput" rel="#prompt">Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
+                    </div>
+                    
+                    <h3  id='nyhedHeadRow3' class="modalInput" rel="#prompt">Section 3</h3>
+                    <div>
+                        <p id="nyhedTextRow3" class="modalInput" rel="#prompt">Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
+                    </div>
+                    
+                    <h3  id='nyhedHeadRow4' class="modalInput" rel="#prompt">Section 4</h3>
+                    <div>
+                        <p id="nyhedTextRow4" class="modalInput" rel="#prompt">Cras dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia mauris vel est. </p><p>Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+                    </div-->
+
+
+                </div>
+                <button id="createNyhed" type="button">Create news</button>
+            </div>
+            <!----------------------Center End--------style="visibility:hidden;"----------->
+        </div>
+
+
+
+        <footer style=" min-height: 130px;">
+            <section class="first">
+                <p style="color:white; font-size: 10px;">&copy;Kunstnergaden</p>
+                <p style="color:white; font-size: 10px;">&copy;Rørholmsgade i Kbh.K</p>
+                <p id="kunstLink">&copy; <a style="color:white; font-size: 10px;"  href="http://www.roerholmsgade.com/">Link</a></p>
+                <div class="hiddenItem"  ></div>   
+            </section>
+
+            <section>
+                <h3 id='fotterCol1Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol1' class="modalInput" rel="#prompt">dddddd</p>
+            </section> 
+
+            <section>
+                <h3 id='fotterCol2Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol2' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>
+
+            <section>
+                <h3 id='fotterCol3Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol3' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>  
+
+            <br class="clearing">        
+        </footer>
+
+    </content>   
+    <!-- ******************************************************************* -->
+    <!-- ******************************************************************* -->
+    <!--                    user input dialog                                -->
+    <!-- ******************************************************************* -->
+    <!-- ******************************************************************* -->
+    <div class="modal" id="prompt">
+        <h2 class="ModalDialogHeader">This is a modal dialog</h2>
+        <script>
+        </script>
+        <!-- input form. you can press enter too -->
+        <p class="hiddenItemSaveType"  ></p>
+        <form id="target">
+            <table class="textTableHeader" border="1" >
+                <tr>
+                    <th width="54%" height="20px"><div id="infoTextHeader"></div></th> 
+                <th width="10%">Font</th>
+                <th width="6%">F.Size</th>
+                <th width="10%">FWeight</th>
+                <th width="10%">Color</th>
+                <th width="10%">BgColor</th>
+                </tr> 
+                <tr  valign="top" class="texttable_text_row">
+                    <td width="54%"  height="60px" ><textarea id="section1" width="100%" maxlength="1000" rows="4" cols="60%"></textarea></td> <!--   -->
+                    <td width="10%">
+                        <SELECT  id="selectFont"   style="width:100%;" name="font">
+                        </SELECT> 
+                    </td>
+                    <td width="6%">
+                        <SELECT   id="selectFSize"  style="width:100%;" name="fsize">
+                        </SELECT>    
+                    </td>
+                    <td width="10%">
+                        <SELECT  id="selectFWeight" style="width:100%;"name="fweight">
+                        </SELECT>   
+                    </td>
+                    <td id="selectFColorId"  width="10%">
+                        <SELECT id="selectFColor"style="width:100%;"name="color">
+                        </SELECT>   
+                    </td>
+                    <td id="selectBgColorId"  width="10%">
+                        <SELECT id="selectBgColor"style="width:100%;"name="bgcolor">
+                        </SELECT>   
+                    </td>
+                </tr>
+            </table>       
+            <!----------------------------------------------------------------->
+            <!----------------------------------------------------------------->
+            <!----------------------------------------------------------------->
+            <table class="textTableBody" border="1" >
+                <tr>
+                    <th width="54%" height="20px"><div id="infoTextBody"></div></th>
+                <th width="10%">Font</th>
+                <th width="6%">F.Size</th>
+                <th width="10%">FWeight</th>
+                <th width="10%">Color</th>
+                <th width="10%">BgColor</th>
+                </tr> 
+                <tr  valign="top" class="texttable_text_row">
+                    <td width="54%"  height="60px" ><textarea id="section1text" width="100%" maxlength="1000" rows="4" cols="60%"></textarea></td> <!--   -->
+                    <td width="10%">
+                        <SELECT  id="selectTextFont"   style="width:100%;" name="font">
+                        </SELECT> 
+                    </td>
+                    <td width="6%">
+                        <SELECT   id="selectTextFSize"  style="width:100%;" name="fsize">
+                        </SELECT>    
+                    </td>
+                    <td width="10%">
+                        <SELECT  id="selectTextFWeight" style="width:100%;"name="fweight">
+                        </SELECT>   
+                    </td>
+                    <td id="selectFColorTextId"  width="10%">
+                        <SELECT id="selectTextFColor"style="width:100%;"name="color">
+                        </SELECT>   
+                    </td>
+                    <td id="selectBgColorTextId"  width="10%">
+                        <SELECT id="selectBgTextColor"style="width:100%;"name="bgcolor">
+                        </SELECT>   
+                    </td>
+                </tr>
+            </table>
+            <div style="float:right;">
+                <td align="right" colspan="4">  <button   class="delete" type="button"  >Delete</button></td>
+                <td align="right">              <button  id="btnClose"  class="close"  type="button"  >Close </button></td>
+                <td align="right">              <button   class="btnSave" type="submit">Save</button></td>
+                <div>
+                    </form>
+                    <br />
+                </div>
+                </body>
+                </html>

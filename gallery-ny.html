@@ -1,0 +1,1417 @@
+<!DOCTYPE HTML>
+<?php
+session_start();
+$user= $_SESSION["userType"];
+?>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>SlideShow</title>
+        <link href="css/overlay.css"           rel="stylesheet" type="text/css">
+        <link href="css/style_galleri.css"     rel="stylesheet" type="text/css">
+        <link href="css/menu.css"              rel="stylesheet" type="text/css" media="screen">
+        <link href="css/flags.css"             rel="stylesheet" type="text/css" >
+        <link href="css/slideshow.css"         rel="stylesheet" type="text/css">
+
+        <script src="js/jquery.tools-1.2.8.min.js"></script>
+
+        <script type="text/javascript"   src="js/jquery.session.js"></script>
+        <script type="text/javascript"   src="js/utilities.js"></script>
+
+
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <style>
+            .search_box{
+                display: none;
+            }
+            .typeOfUser{
+                color:white;
+            }
+            #login_box_gallery{
+                display: none;
+                width:0px;
+            }
+            content{
+                background-color: lightgray;  
+            }
+            #fotterCol1Head, #fotterCol2Head, #fotterCol3Head{
+                height:25px; 
+                display: block;
+                text-align: center;
+                /*background-color:blue;*/
+            } 
+            
+            #fotterCol1,#fotterCol2,#fotterCol3{
+                text-align: center;
+            }
+        </style>
+        <!-- enable th jQuerry -->
+        <style>
+            /*
+            .datagrid{
+                height: 1125px;
+            }
+            #output_process{
+                color: red; border-left: 1px solid #E1EEF4;font-size: 15px;font-weight: bold;
+            }
+            .datagrid table { border-collapse: collapse; 
+                              text-align:left; 
+                              width: 100%; 
+            } 
+            .datagrid table tbody td { color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+            .datagrid {
+                font: normal 12px/150% Arial,Helvetica, sans-serif; 
+                background: #fff; 
+                overflow: hidden; 
+                border: 1px solid #006699; 
+                -webkit-border-radius: 3px; 
+                -moz-border-radius: 3px; 
+                border-radius: 3px; 
+            }
+            .datagrid table td, .datagrid table th { 
+                padding: 1px 1px; 
+            }
+            .datagrid table thead th 
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699),color-stop(1, #00557F) );
+                background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );
+                filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');
+                background-color:#006699; 
+                color:#FFFFFF; 
+                font-size: 15px; 
+                font-weight: bold; 
+                border-left: 1px solid #0070A8;     
+            }
+            .buttongrid table tbody td { height: 15px; color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+            .datagrid table tbody td { color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+            .datagrid table tbody .alt td { background: #E1EEF4; color: #00496B; }
+            .datagrid table tbody td:first-child { border-left: none; }
+            .datagrid table tbody tr:last-child td { border-bottom: none; }
+            .datagrid table tfoot { border-top: 1px solid #006699;background: #E1EEF4;} 
+            .datagrid table tfoot { border-top: 0px solid #006699;background: #E1EEF4;} 
+            */
+            nav .upload_button li{
+                display: inline;
+                list-style-type: none;
+                padding-right: 120px;
+
+            }
+            .activcolumn{
+                margin-bottom: 1px;color: #FFFFFF;
+                padding-bottom: 10px; 
+                background-color:#fff;
+
+            }
+            th.activcolumnhedder{
+                width: 5px;
+                padding-left: 50px 0px #0070A8; ;
+
+            }
+        </style>
+        <!-- overlay--->
+
+
+        <!-- slidshow -->
+
+        <style>
+            #image_wrap{
+                position: absolute; 
+                /*  margin: auto;*/  
+                left:0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+
+                /*display: block;
+                margin: auto auto;*/
+                height:430px;
+                background-color:lightgrey;
+                text-align: center;
+            }
+            #inner_image_wrap {
+                position: absolute; 
+                margin: auto;  
+                left:0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                color: #00496B;
+                text-align: center;
+                background-color:lifgtgray;/*white; lightsteelblue;/**/
+            }
+            #image_wrap #inner_image_wrap img {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                margin-left: 10px;
+                margin-right: 10px;
+                position: relative;
+                cursor: pointer;
+
+                /* left:0;
+                 right: 0;
+                 top: 0;
+                 bottom: 0;*/
+            }
+            /* #image_wrap{
+                 position: relative;
+                 top: 0%;
+                 left: 150px;
+                 width: 600px;
+                 height:400px;
+                 border:2px solid #666;
+             }
+             #image_wrap img {
+                 width: 100%;
+                 height: 100%;
+             }*/
+
+        </style>
+
+        <style>
+            article, aside, figure, footer, header, hgroup, 
+            menu, nav, section { display: block; }
+
+            *{margin:0;padding:0;}
+            body{
+                font-family:'Trebuchet MS', Arial, Helvetica, sans-serif;
+                background-color:white;
+                /* background:url(http://img811.imageshack.us/img811/4200/image22y.jpg);*/
+                color:#7D8993;
+            }
+            ul{list-style:none;}
+            a{text-decoration:none;}
+
+            /*****************/	
+            /*** Log in box***/
+            /*****************/	
+            #login_box_gallery {
+                /*float:right;*/
+                position: absolute;
+                /*position: relative;*/ 
+                background-color:lightgray;
+                top: 5px; 
+                height:60px;
+                /*padding:20px;/* 20px 20px 600px;*/
+                left: 900px; 
+                width:350px;
+                border-radius:3px;
+                -moz-border-radius:3px; /* Firefox 3.6 and earlier */
+                border-style:solid;
+                border-width:1px; 
+                border-color:#CCCCFF;
+
+            }
+
+            #top{
+                position:absolute;
+                width:100%;
+                height:200px;
+            }
+            #top h1{
+                font-size:80px;
+            }
+
+            #mid{
+                height:20%;/*400px*/
+                width:100%;
+                background:#fff;
+                background:lightgray;/*rgba(255,255,255,0.8);*/
+                overflow:hidden;
+                /*background-color: yellow;*/
+            }
+            #gallery{
+                position:relative;
+                cursor: pointer;
+                margin:0 auto;
+                width:980px;
+                height:160px; /*400px*/
+                /*background-color: red;*/
+            }
+            #slider{
+                position:absolute;
+                cursor: pointer;
+                left:0px;
+                width:9999999px;
+                height:140px;/*400px;*/ 
+                /*background-color:#787964;*/
+            }
+            #slider img{
+               cursor: pointer;
+            }
+            .box{
+                border-color: brown; border:1px ;
+                position:relative;
+                display:inline;
+                padding: 20px 20px;
+                /* padding: 20px 150px;*/
+                /*height:360px;*/
+                float:left;
+                /*background-color: green;*/ 
+                height:100px;
+                width:100px; /* (960-600)/2 = 180px padding space for each button*/
+                cursor:cell;
+            }
+            .btn{
+                cursor:pointer;
+                /* width:70px;
+                 height:70px;*/
+                position:absolute;
+                /*border-radius:70px;*/
+                top:26px;
+                width: 100px;
+            }
+            .btn_left{left:-93px; height:70px;}
+            .btn_right{right:-95px; height:70px;}
+            /**  hashed **/
+            /* active item */
+            .active {
+                border:4px solid white;
+                /* position:relative;
+                 cursor:default;*/
+            }
+
+            #fssPrev{position:absolute;left:-47px;top:-10px;background:url(images/arrows.png) -67px 0px;width:67px;height:143px;text-indent:-999999px;}
+            #fssNext{position:absolute;left:960px;top:-10px;background:url(images/arrows.png) no-repeat;width:67px;height:143px;text-indent:-999999px;}
+
+            /* get rid of those system borders being generated for A tags */
+            /*
+            div:active {
+                outline:none;
+            }*/
+        </style>
+
+
+        <script language="javascript">
+            /**************************************/
+            /****           Load               ****/
+            /**************************************/
+            jQuery(window).load(function() {
+                var typeOfUser = $.session.get('userType');
+                //alert('typeOfUser:   '+typeOfUser);
+                //var typeOfUser = '<?php print( $_SESSION["userType"]);   ?>';
+                if (typeOfUser === 'admin')
+                    $(".typeOfUser").text(typeOfUser);
+                else {
+                    $(".typeOfUser").text('');
+                    $("#uploadNavHorizantal").css('display', 'none');
+                    // $("#uploadNavVertical").css('display', 'none');
+                }
+            });
+            var projectid = GetProjectId();
+            var mapOfImageText; // or var map of image and text;
+            /**************************************/
+            /****           Ready              ****/
+            /**************************************/
+            jQuery(document).ready(function($) {
+                //jQuery('#fssNext').css('display');      
+                //jQuery('#fssPrev').css('display');      
+
+                //   if (sessionStorage.getItem("is_reloaded")) alert('Reloaded!');
+                //       sessionStorage.setItem("is_reloaded", true);
+
+                console.log("image_wrap img width: " + $("#image_wrap img").width());
+                $('content').css("width", $(window).width() + "px");
+                $('.header_box').css("width", $(window).width() + "px");
+                $("img[rel]").overlay();
+                var animateTime = 1000; // set preferred animation time
+                var galW = $('#gallery').innerWidth(); // return 960px
+                var activDivIndex = 0;
+                $('.btn_left').hide();
+                var dbImagesArray = [];
+                //-------------------------------------- -
+                /*   alert('Before click');
+                 $("#slider div img:first-child").click();
+                 alert('Efter click');
+                 */ //----------------------------------------
+
+                /*
+                 //  Division + remainder
+                 var TotalSlidesPages = Math.floor($('#slider>div.box').length / 7);
+                 
+                 var rem = $('#slider>div.box').length % 7;
+                 if (rem > 0) {
+                 TotalSlidesPages = TotalSlidesPages + 1;
+                 }*/
+
+                var pageCounter = 0; // set pageCounter to '0'
+                // init slider 
+                for (var i = 0; i <= $('#slider > div').length; i++)
+                    $("#slider div").eq(i).css('visibility', 'hidden');
+                for (var i = 0; i < 7; i++)
+                    $("#slider div").eq(i).css('visibility', 'visible');
+
+
+                //***  Fet picture inside div
+                $('img.shelf-img').each(function(i, item) {
+                    var img_height = $(item).height();
+                    var div_height = $(item).parent().height();
+                    if (img_height < div_height) {
+                        //INCREASE HEIGHT OF IMAGE TO MATCH CONTAINER
+                        $(item).css({'width': 'auto', 'height': div_height});
+                        //GET THE NEW WIDTH AFTER RESIZE
+                        var img_width = $(item).width();
+                        //GET THE PARENT WIDTH
+                        var div_width = $(item).parent().width();
+                        //GET THE NEW HORIZONTAL MARGIN
+                        var newMargin = (div_width - img_width) / 2 + 'px';
+                        //SET THE NEW HORIZONTAL MARGIN (EXCESS IMAGE WIDTH IS CROPPED)
+                        $(item).css({'margin-left': newMargin});
+                    } else {
+                        //CENTER IT VERTICALLY (EXCESS IMAGE HEIGHT IS CROPPED)
+                        var newMargin = (div_height - img_height) / 2 + 'px';
+                        $(item).css({'margin-top': newMargin});
+                    }
+                });
+                //***********************************************
+                //***  http://jsfiddle.net/GoranMottram/D4BwA/1/
+                //***      center image
+                //**********************************************
+                jQuery.fn.centerWidth = function()
+                { //alert('(window).Widtht():  '+$(window).width());
+                    //alert('this.outerWidth():  '+this.outerHeight());
+                    this.css("position", "relative");
+                    this.css("left", ($(window).width() / 2) - (this.outerWidth() / 2));
+                    return this;
+                }
+                //***********************************************
+                //***
+                //***
+                //***********************************************
+                jQuery.fn.centerHeight = function()
+                {   //alert('(window).height():  '+$(window).height());
+                    //alert('this.outerHeight():  '+this.outerHeight());
+                    this.css("position", "fixed");
+                    this.css("top", ($(window).height() / 2) - (this.outerHeight() / 2));
+                    return this;
+                }
+
+                /* $('.overlay-img-wrap').centerWidth();
+                 $('.overlay-img-wrap').centerHeight();*/
+                $('#image_wrap').centerWidth();
+
+                $(window).resize(function() {
+                    $('#image_wrap').centerWidth();
+
+
+                });
+                //****************************************
+                //**
+                //****************************************
+                function states() {
+                    var cStat;
+                    if (cStat = pageCounter === -1) {
+                        console.log('states()==1==> pageCounter:' + (pageCounter + 1) + '  TotalSlidesPages:' + TotalSlidesPages + '   pageCounter = TotalSlidesPages - 1:  ' + TotalSlidesPages - 1);
+                        pageCounter = TotalSlidesPages - 1;
+                    }
+                    else {
+                        console.log('states()==2==> pageCounter:' + pageCounter + '  TotalSlidesPages:' + TotalSlidesPages + '   pageCounter % TotalSlidesPages: ' + pageCounter % TotalSlidesPages);
+                        pageCounter = pageCounter % TotalSlidesPages;
+                    }
+                }
+                // get all images synchrony 
+                getAllImages();
+                var TotalSlidesPages = Math.floor($('#slider>div.box').length / 7);
+                var rem = $('#slider>div.box').length % 7;
+                if (rem > 0) {
+                    TotalSlidesPages = TotalSlidesPages + 1;
+                }
+
+
+                //Initial Hidding of images
+                for (var i = 7; i <= $('#slider > div').length; i++) {
+                    $("#slider div").eq(i).css('visibility', 'hidden');
+                }
+                states(); // set states at DOM ready
+                //****************************************
+                //** Page change
+                //****************************************
+                function anim() {
+                    console.log('pageCounter: ' + pageCounter + '  pageCounter * galW: ' + pageCounter * galW);
+                    $('#slider').stop(1).animate({left: -(pageCounter * galW)}, animateTime);
+                }
+                var $currElement = $("#slider div:first-child");
+                //console.log('init currElement:  ' + $("#slider div:first-child").attr('class'));
+                //****************************************
+                //***  slider prev/next btn click
+                //***
+                //****************************************
+                $('#gallery .btn').on('click', function() {
+                    //alert('#gallery .btn');
+                    var btnType;
+                    $(this).hasClass('btn_left') ? btnType = 'btn_left' : btnType = 'btn_right';
+                    // Find index of activ Image
+                    $("#slider img").each(function(i) {
+                        console.log('i:  ' + i);
+                        if ($(this).is('.active')) {
+                            if (btnType === 'btn_left') {
+                                activDivIndex = i - 1;
+                                console.log('btn_left:  ' + i + '  activDivIndex: ' + activDivIndex);
+                            } else {
+                                activDivIndex = i + 1;
+                                console.log('btn_right:  ' + i + '  activDivIndex: ' + activDivIndex);
+                            }
+                            /// console.log('btn click:   '+$(this).attr('src')+' is activ: '+$(this).is('.active')+' activDivIndex:'+activDivIndex +'   i:'+i);
+                        }
+                    });
+
+                    if ($(this).hasClass('btn_left')) {  //  btn prev click
+                        console.log('-----------activDivIndex: ' + activDivIndex + '  ----------------------------------->prev   pageCounter:' + pageCounter);
+                        //$currElement = $("#slider div").eq(activDivIndex);
+                        $currElement = $("#slider div:first-child");
+                        if (0 != activDivIndex) {
+                            var i = 0;// find curren element
+                            while (i < (activDivIndex)) {
+                                console.log('-----------i: ' + i + ' ----------------------------------->prev ');
+                                $currElement = $currElement.next();
+                                i++;
+                            }
+                        }
+                        //return;  
+                    }//left
+                    else {  //  btn next click
+                        console.log('---------------------------------------------->next:  pageCounter: ' + pageCounter);
+                        console.log('next    (slider > div).length: ' + $('#slider > div').length + '  activDivIndex : ' + activDivIndex + '  TotalSlidesPages: ' + TotalSlidesPages);
+                        $currElement = $("#slider div:first-child");
+                        if ($('#slider > div').length != activDivIndex) {
+                            // Find curren element
+                            var i = 0;
+                            while (i < activDivIndex) {
+                                $currElement = $currElement.next();
+                                i++;
+                            }
+                        }
+                        //console.log('currElement:  '+$("#slider div:first-child").attr('class'));
+                    }
+                    console.log('********* before calling click *****************');
+                    //  Generate click for showing select of image
+                    $currElement.children('img').click();
+                    console.log('********* efter calling click ***************** activDivIndex:  ' + activDivIndex);
+                    //hide left button
+                    //alert('activDivIndex: '+activDivIndex);
+                    activDivIndex == 0 ? $('.btn_left').hide() : $('.btn_left').stop(1).fadeIn(300);
+                    //
+                    //divindex start0 from 0 to 23  but length is 24
+                    $('#slider>div').length == (activDivIndex + 1) ? $('.btn_right').hide() : $('.btn_right').stop(1).fadeIn(300);
+                    console.log('--------btn_left-----activDivIndex-------->:' + activDivIndex + " activDivIndex % 7 :" + activDivIndex % 7);
+                    // 'btn_left' clicked
+                    if (($(this).hasClass('btn_left') && (((activDivIndex + 1) % 7) === 0))) {
+                        //Hide all images in slider
+                        for (var i = 0; i <= $('#slider > div').length; i++)
+                            $("#slider div").eq(i).css('visibility', 'hidden');
+                        pageCounter--;
+                        console.log('--------btn_left-----pageCounter-------->:' + pageCounter);
+                        var start = (pageCounter) * 7;
+                        var end = (pageCounter + 1) * 7;
+                        for (start; start < end; start++) {
+                            console.log('start: ' + start);
+                            $("#slider div").eq(start).css('visibility', 'visible');
+                        }
+
+                        states();
+                        anim();
+                        return;
+                    }
+                    console.log('--------btn_right-----activDivIndex-------->:' + activDivIndex + " activDivIndex % 7 :" + activDivIndex % 7);
+                    // 'btn_right' clicked if active div =7, 14, 21,  or active div is last div(image) 
+                    if ((((activDivIndex % 7) === 0) && $(this).hasClass('btn_right')) || ($('#slider > div').length == activDivIndex)) {
+                        pageCounter++;
+                        for (var i = 0; i <= $('#slider > div').length; i++) {
+                            //  console.log('i:' + i);
+                            $("#slider div").eq(i).css('visibility', 'hidden');
+                        }
+                        console.log('--------btn_right-----pageCounter-------->:' + pageCounter);
+                        var start = (pageCounter) * 7;
+                        var end = (pageCounter + 1) * 7;
+                        for (start; start < end; start++) {
+                            // console.log('start: ' + start);
+                            $("#slider div").eq(start).css('visibility', 'visible');
+                        }
+                        states();
+                        anim();
+                    }
+                });
+
+                //****************************************
+                //***           image click
+                //***
+                //****************************************
+                /*
+                 console.log(' 0%0: '+0%0);
+                 console.log(' 1%0: '+1%0);
+                 console.log(' 0%1: '+0%1);
+                 console.log(' 1%1: '+1%1);
+                 console.log(' 1%2: '+1%2);
+                 console.log(' 2%1: '+2%1);
+                 console.log(' 9%0: '+9%0);
+                 console.log(' 9%9: '+9%9);
+                 console.log(' 0%9: '+0%9);
+                 console.log(' 0%7: '+0%7);
+                 console.log(' 1%7: '+1%7);
+                 console.log(' 2%7: '+2%7);
+                 console.log(' 3%7: '+3%7);
+                 console.log(' 4%7: '+4%7);
+                 console.log(' 5%7: '+5%7);
+                 console.log(' 6%7: '+6%7);
+                 console.log(' 7%7: '+7%7);
+                 console.log(' 100%100: '+100%100);
+                 console.log(' 101%100: '+101%100);
+                 console.log(' 200%100: '+101%100);
+                 console.log(' 245%100: '+101%100);
+                 console.log(' 2450%100: '+101%100);
+                 */
+                
+                //*********************************************
+                //***
+                //*********************************************
+                $('#slider img').on('click', function() {
+
+                    //alert('#slider img click =====>');
+                    /*                  console.log('#slider img  selectedPageNumber: ' + selectedPageNumber +
+                     '  active div:  ' + (parseInt($(this).parent().index()) + 1) +
+                     '  activeDiv in selectedPageNumber:  ' + (parseInt($(this).parent().index()) + 1) % 7);
+                     */
+                    console.log('.items img click src: ' + $(this).attr("src") + '    class: ' + $(this).attr("class"));
+
+                    // see if same thumb is being clicked
+                    if ($(this).hasClass("active")) {
+                        //  $(this).removeClass("active");
+                        // alert('hasClass active');
+                        return;
+                    }
+                    var url = $(this).attr("src").replace("_t", "");
+                    var imgId = $(this).attr("id");
+                    //alert(imgId); 
+                    // get handle to element that wraps the image and make it semi-transparent
+                    var wrap = $("#image_wrap").fadeTo("medium", 0.5);
+                    //var wrap = $("#image_wrap").animate({top: '0px' }, {queue:false, duration:350, easing:'easeOutBounce'});
+
+
+
+                    // the large image from www.flickr.com
+                    var img = new Image();
+
+                    var resize = false;
+                    // call this function after it's loaded
+                    img.onload = function() {
+                        //alert('img load');
+                        // make wrapper fully visible
+                        //wrap.fadeTo("fast", 1);
+                        wrap.fadeTo("slow", 1);
+
+
+                        // change the image
+                        wrap.find("img").attr("src", url).attr("id", imgId);
+                        console.log("---------------------------->img.onload height:" + $(this).height() + '  img.height:  ' + img.height);
+
+                        //  resizeDiv($(this));
+                        if (resize) {
+                            var newHeight = img.height + 50;
+                            var newWidth = img.width + 20;
+                            $("#inner_image_wrap").css("height", newHeight);
+                            $("#inner_image_wrap").css("width", newWidth);
+                        }
+                    };
+
+                    // begin loading the image 
+                    img.src = url;
+                    console.log("---------------------------->efter load img.src = url  img.height: " + img.height);
+
+                    //alert(' img.height:  '+ img.height+' url:'+url);
+
+                    if (img.height > 0) {
+                        var newHeight = img.height + 50;
+                        var newWidth = img.width + 20;
+                        $("#inner_image_wrap").css("height", newHeight);
+                        $("#inner_image_wrap").css("width", newWidth);
+                    }
+                    else
+                        resize = true;
+
+
+                    $("#gallery img").removeClass("active");
+                    $(this).addClass("active");
+
+                    console.log($(this).attr('src') + ' hasclass: ' + $(this).hasClass("active"));
+                    var counter = 0, foundImage = 0;
+
+                    $("#slider img").each(function() {
+                        if ($(this).is('.active')) {
+                            counter++;
+                            foundImage = counter;
+                            //alert('Counter: '+ counter);
+
+
+                            if (counter === 1)
+                                $(".btn_left").css('display', 'none');
+                            else
+                                $(".btn_left").css('display', 'block');
+
+                            console.log($(this).attr('src') + ' is activ: ' + $(this).is('.active') + ' counter:' + counter);
+                        }
+                        else {
+                            counter++;
+                            //console.log('not activ:  '+$(this).attr('src')+"  counter  : "+counter);
+                        }
+                    });
+                    $("#divText").text(foundImage + '/' + counter);
+                    // alert('#slider img click ==2===>');
+                    // when page loads simulate a "click" on the first image
+                }).filter(":first").click();
+                //}).filter(":first").click(function() {alert( "Handler for .click() called." );});
+                //*******************
+                //****  getPositionOfimage *****
+                //*******************
+                function getPositionOfimage(winHeight, imgHeight, procent) {
+                    var valueOfProc = (procent / 100) * winHeight;
+                    if ((winHeight - imgHeight > (2 * valueOfProc))) {
+                        return (valueOfProc)
+                    }
+                    var remainHeight = winHeight - imgHeight;
+                    return (remainHeight / 4);
+                }
+                //*********************************************
+                //***
+                //*********************************************
+                $('#image_wrap img').on('click', function() {
+                   
+                    //$(".overlay").css("display",block);
+                    $(".simple_overlay").css("display","block");
+
+                   // $(".simple_overlay").css("width", $(window).width() + "px");
+                    
+                    //alert('#image_wrap img');
+                    $(".overlay-counter div").remove();
+                    $(".overlay-desc div").remove();
+
+                    var imgName = $(this).attr('src').substring(($(this).attr('src').lastIndexOf("/")) + 1, $(this).attr('src').length);
+                   // alert('#image_wrap img  imgName: '+ ("big_"+imgName));
+                    getAllOverlayImages((imgName));
+                    $('.overlay-img-wrap img:gt(0)').hide();
+
+                    //Set firste image in the position
+                    var winHeight = $('.simple_overlay').height();
+                    var imgHeight = $('.overlay-img-wrap img').height();
+                    var proc = 10;
+                    var marginTop = getPositionOfimage(winHeight, imgHeight, proc);
+                    var marginLeft = ($('.simple_overlay').width() / 2) - ($('.overlay-img-wrap img').width() / 2);
+
+                    $(".overlay-img-wrap").css("height", $('.overlay-img-wrap img').height() + 20);
+                    $(".overlay-img-wrap").css("width", $('.overlay-img-wrap img').width() + 20);
+
+                    $(".overlay-img-wrap").css("margin-top", marginTop);
+                    $(".overlay-img-wrap").css("margin-left", marginLeft);
+
+                    //$(".overlay-prev").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));//$('.overlay-img-wrap img').height());
+                    //$(".overlay-prev").css("left", marginLeft - 30);
+
+                   // $(".overlay-next").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));
+                    // $(".overlay-next").css("left", marginLeft + ($('.overlay-img-wrap img').width() + 20));
+
+                    //  $(".simple_overlay .close").css("top", marginTop + $('.overlay-img-wrap img').height() + 15);
+                    //   $(".simple_overlay .close").css("left", marginLeft + ($('.overlay-img-wrap img').width()) - 5);
+
+                   $(".overlay-enlarg").css("top", marginTop + ($('.overlay-img-wrap img').height() + 20));//$('.overlay-img-wrap img').height());
+                   $(".overlay-enlarg").css("left", marginLeft + ($('.overlay-img-wrap img').width() -20));
+
+                    $(".overlay-prev").css("top", ($('.simple_overlay').height()/2));//$('.overlay-img-wrap img').height());
+                    $(".overlay-next").css("top", ($('.simple_overlay').height()/2));
+                    
+                    $(".overlay-img-grp-wrap .overlay-counter").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-counter").css("margin-left", marginLeft);
+
+                    $(".overlay-img-grp-wrap .overlay-desc").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-desc").css("margin-left", marginLeft);
+                    //overlay-counter
+                    // overlay-img-grp-wrap
+                    // $(".overlay-next").css("top", marginTop+$('.overlay-img-wrap img').width() + 20);
+                });
+                //*******************
+                //****  overlay *****
+                //*******************
+                $('.overlay-img-wrap img:gt(0)').hide();
+                
+                //*********************************************
+                //***
+                //*********************************************
+                $('.overlay-close').click(function() {
+                    //alert('close');
+                    $(".simple_overlay").css("display","none");
+                });
+                $('.overlay-enlarg-close').click(function() {
+                    //alert('close');
+                    $(".overlay").css("display","none");
+                });
+                //*********************************************
+                //***
+                //*********************************************
+                $('.overlay-next').click(function() {
+
+//alert($('.simple_overlay').height());
+                    $('.overlay-img-wrap img').hide();
+                    $('.overlay-img-wrap img:first-child').fadeOut().next().fadeIn().end().appendTo('.overlay-img-wrap');
+
+                    var winHeight = $('.simple_overlay').height();
+                    var imgHeight = $('.overlay-img-wrap img').height();
+
+                    var proc = 10;//Procent from top
+
+                    var marginTop = getPositionOfimage(winHeight, imgHeight, proc);//(($('.simple_overlay').height() / 2)-200)     ;
+                    var marginLeft = ($('.simple_overlay').width() / 2) - ($('.overlay-img-wrap img').width() / 2);
+
+                    $(".overlay-img-wrap").css("height", $('.overlay-img-wrap img').height() + 20);
+                    $(".overlay-img-wrap").css("width", $('.overlay-img-wrap img').width() + 20);
+
+                    $(".overlay-img-wrap").css("margin-top", marginTop);
+                    $(".overlay-img-wrap").css("margin-left", marginLeft);
+/*
+                    $(".overlay-prev").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));//$('.overlay-img-wrap img').height());
+                    $(".overlay-prev").css("left", marginLeft - 30);
+
+                     $(".overlay-next").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));
+                     $(".overlay-next").css("left", marginLeft + ($('.overlay-img-wrap img').width() + 20));
+
+                    $(".overlay-prev").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));//$('.overlay-img-wrap img').height());
+                    $(".overlay-next").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));
+
+*/
+                    $(".overlay-prev").css("top", ($('.simple_overlay').height()/2));//$('.overlay-img-wrap img').height());
+                    $(".overlay-next").css("top", ($('.simple_overlay').height()/2));
+                    $(".overlay-enlarg").css("top", marginTop + ($('.overlay-img-wrap img').height() + 20));//$('.overlay-img-wrap img').height());
+                    $(".overlay-enlarg").css("left", marginLeft + ($('.overlay-img-wrap img').width() -20));
+
+
+                    // $(".simple_overlay .close").css("top", marginTop + $('.overlay-img-wrap img').height() + 15);
+                    // $(".simple_overlay .close").css("left", marginLeft + ($('.overlay-img-wrap img').width()) - 5);
+
+                    $(".overlay-img-grp-wrap .overlay-counter").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-counter").css("margin-left", marginLeft);
+
+                    $(".overlay-img-grp-wrap .overlay-desc").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-desc").css("margin-left", marginLeft);
+
+                    for (var i = 0; i < dbImagesArray.length; i++) {
+                        var str = $('.overlay-img-wrap img').attr('src');
+                        var n = str.indexOf(dbImagesArray[ i ]);
+                        if (n >= 0) {
+                            $(".overlay-counter div").remove();
+                            $(".overlay-desc div").remove();
+                            $(".overlay-counter").append("<div style='text-align: center; height:20px;'  >" + (i + 1) + "/" + dbImagesArray.length + "</div>");
+                            $(".overlay-desc").append("<div style='text-align: center; height:20px;'>" + mapOfImageText[dbImagesArray[ i ]] + "</div>");
+
+                            console.log('???????: >> i: ' + (i + 1) + '   image: ' + dbImagesArray[ i ]);
+                        }// if(dbImagesArray[ i ]===$('.overlay-img-wrap img').attr('src'))
+                    }
+                });
+
+                //*********************************************
+                //***  overlay-prev   click
+                //*********************************************
+                $('.overlay-prev').click(function() {
+                
+                    $('.overlay-img-wrap img').hide();
+                    //console.log('overlay-prev');
+                    $('.overlay-img-wrap img:first-child').fadeOut();
+                    $('.overlay-img-wrap img:last-child').prependTo('.overlay-img-wrap').fadeOut();
+                    $('.overlay-img-wrap img:first-child').fadeIn();
+                    var winHeight = $('.simple_overlay').height();
+                    var imgHeight = $('.overlay-img-wrap img').height();
+
+                    var proc = 10;//Procent from top
+
+                    var marginTop = getPositionOfimage(winHeight, imgHeight, proc);//(($('.simple_overlay').height() / 2)-200)     ;
+                    var marginLeft = ($('.simple_overlay').width() / 2) - ($('.overlay-img-wrap img').width() / 2);
+
+                    $(".overlay-img-wrap").css("height", $('.overlay-img-wrap img').height() + 20);
+                    $(".overlay-img-wrap").css("width", $('.overlay-img-wrap img').width() + 20);
+
+                    $(".overlay-img-wrap").css("margin-top", marginTop);
+                    $(".overlay-img-wrap").css("margin-left", marginLeft);
+/*
+                    $(".overlay-prev").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));//$('.overlay-img-wrap img').height());
+                    $(".overlay-prev").css("left", marginLeft - 130);
+
+                    $(".overlay-next").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));
+                    $(".overlay-next").css("left", marginLeft + ($('.overlay-img-wrap img').width() + 20));
+*/
+
+                    $(".overlay-prev").css("top", ($('.simple_overlay').height()/2));//$('.overlay-img-wrap img').height());
+                    $(".overlay-next").css("top", ($('.simple_overlay').height()/2));
+                    
+                    $(".overlay-enlarg").css("top", marginTop + ($('.overlay-img-wrap img').height() + 20));//$('.overlay-img-wrap img').height());
+                    $(".overlay-enlarg").css("left", marginLeft + ($('.overlay-img-wrap img').width() -20));
+
+                    $(".simple_overlay .close").css("top", marginTop + $('.overlay-img-wrap img').height() + 15);
+                    $(".simple_overlay .close").css("left", marginLeft + ($('.overlay-img-wrap img').width()) - 5);
+
+                    $(".overlay-img-grp-wrap .overlay-counter").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-counter").css("margin-left", marginLeft);
+
+                    $(".overlay-img-grp-wrap .overlay-desc").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-desc").css("margin-left", marginLeft);
+
+                    for (var i = 0; i < dbImagesArray.length; i++) {
+                        var str = $('.overlay-img-wrap img').attr('src');
+                        var n = str.indexOf(dbImagesArray[ i ]);
+                        if (n >= 0) {
+                            $(".overlay-counter div").remove();
+                            $(".overlay-desc div").remove();
+                            $(".overlay-counter").append("<div style='text-align: center; height:20px;'  >" + (i + 1) + "/" + dbImagesArray.length + "</div>");
+                            $(".overlay-desc").append("<div style='text-align: center; height:20px;'>" + mapOfImageText[dbImagesArray[ i ]] + "</div>");
+
+                            console.log('???????: >> i: ' + (i + 1) + '   image: ' + dbImagesArray[ i ]);
+                        }// if(dbImagesArray[ i ]===$('.overlay-img-wrap img').attr('src'))
+                    }
+
+                });
+                //*********************************************
+                //***  overlay-enlarg   click
+                //*********************************************
+                $('.overlay-enlarg').click(function() {
+                    $('#overlay-enlarg-div img').remove();
+                    $('.overlay').css({'display' :'block'});
+                    $('.overlay').css({'text-align' :'center'});
+                    var winHeight = $('.overlay').height();
+                    var winWidth = $('.overlay').width();
+                    var imgHeight = $('.overlay-img-wrap img').height() * 2;
+                    var imgWidth =  $('.overlay-img-wrap img').width() * 2;
+                    var proc = 10;//Procent from top
+                    var marginTop = getPositionOfimage(winHeight, imgHeight, proc);//(($('.simple_overlay').height() / 2)-200)     ;
+                    var marginLeft = ($('.overlay').width() / 2) - (imgWidth/ 2);
+                   
+                    $("#overlay-enlarg-div").css("margin-top", marginTop);
+                    $("#overlay-enlarg-div").css("margin-left", marginLeft);
+                    
+                    //images/Arrow-right-icon.png
+                    //alert($('.overlay-img-wrap img').attr('src'));
+                    var img=$('.overlay-img-wrap img').attr('src');
+                    $('#overlay-enlarg-div').css({'width' : ((imgWidth/4)+'px') , 'height' : ((imgHeight/4)+'px')});
+                    
+                    //$('#overlay-enlarg-div').prepend('<img src='+img+' style="width:100%; height:100%;"/>');
+                    $('#overlay-enlarg-div').prepend('<img src='+img+' style="width:100%; height:100%;"/>');
+                   // $('#overlay-enlarg-div').animate({"height": "500px"}, 100).animate({"width": "500px"},250 );
+                    $('#overlay-enlarg-div').animate({"height": imgHeight+"px", "width": imgWidth+"px"},"slow" );
+                    
+                    
+                    //$('#overlay-enlarg-div').prepend('<img src="'+$('.overlay-img-wrap img').attr('src')  +'/>')
+            
+                     //$('.overlay-img-wrap img').css({'width' : ((imgWidth*2)+'px') , 'height' : ((imgHeight*2)+'px')});
+                     //  alert($('.overlay-img-wrap img').attr('src'));
+                    return;
+                    //console.log('overlay-prev');
+                    $('.overlay-img-wrap img:first-child').fadeOut();
+                    $('.overlay-img-wrap img:last-child').prependTo('.overlay-img-wrap').fadeOut();
+                    $('.overlay-img-wrap img:first-child').fadeIn();
+                    var winHeight = $('.simple_overlay').height();
+                    var imgHeight = $('.overlay-img-wrap img').height();
+
+                    var proc = 10;//Procent from top
+
+                    var marginTop = getPositionOfimage(winHeight, imgHeight, proc);//(($('.simple_overlay').height() / 2)-200)     ;
+                    var marginLeft = ($('.simple_overlay').width() / 2) - ($('.overlay-img-wrap img').width() / 2);
+
+                    $(".overlay-img-wrap").css("height", $('.overlay-img-wrap img').height() + 20);
+                    $(".overlay-img-wrap").css("width", $('.overlay-img-wrap img').width() + 20);
+
+                    $(".overlay-img-wrap").css("margin-top", marginTop);
+                    $(".overlay-img-wrap").css("margin-left", marginLeft);
+/*
+                    $(".overlay-prev").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));//$('.overlay-img-wrap img').height());
+                    $(".overlay-prev").css("left", marginLeft - 130);
+
+                    $(".overlay-next").css("top", marginTop + ($('.overlay-img-wrap img').height() + 50));
+                    $(".overlay-next").css("left", marginLeft + ($('.overlay-img-wrap img').width() + 20));
+*/
+
+                    $(".overlay-prev").css("top", ($('.simple_overlay').height()/2));//$('.overlay-img-wrap img').height());
+                    $(".overlay-next").css("top", ($('.simple_overlay').height()/2));
+                    
+                    $(".overlay-enlarg").css("top", marginTop + ($('.overlay-img-wrap img').height() + 20));//$('.overlay-img-wrap img').height());
+                    $(".overlay-enlarg").css("left", marginLeft + ($('.overlay-img-wrap img').width() -20));
+
+                    $(".simple_overlay .close").css("top", marginTop + $('.overlay-img-wrap img').height() + 15);
+                    $(".simple_overlay .close").css("left", marginLeft + ($('.overlay-img-wrap img').width()) - 5);
+
+                    $(".overlay-img-grp-wrap .overlay-counter").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-counter").css("margin-left", marginLeft);
+
+                    $(".overlay-img-grp-wrap .overlay-desc").css("width", ($('.overlay-img-wrap img').width() + 20));
+                    $(".overlay-img-grp-wrap .overlay-desc").css("margin-left", marginLeft);
+
+                    for (var i = 0; i < dbImagesArray.length; i++) {
+                        var str = $('.overlay-img-wrap img').attr('src');
+                        var n = str.indexOf(dbImagesArray[ i ]);
+                        if (n >= 0) {
+                            $(".overlay-counter div").remove();
+                            $(".overlay-desc div").remove();
+                            $(".overlay-counter").append("<div style='text-align: center; height:20px;'  >" + (i + 1) + "/" + dbImagesArray.length + "</div>");
+                            $(".overlay-desc").append("<div style='text-align: center; height:20px;'>" + mapOfImageText[dbImagesArray[ i ]] + "</div>");
+
+                            console.log('???????: >> i: ' + (i + 1) + '   image: ' + dbImagesArray[ i ]);
+                        }// if(dbImagesArray[ i ]===$('.overlay-img-wrap img').attr('src'))
+                    }
+
+                });
+                //***************************************************************
+                function resizeDiv(img) {
+                    //  alert('resize div');
+                   // alert(' resize div img.height:  ' + img.height());
+                }
+                //***************************************************************
+                //*** 
+                //*** Map Of Images
+                //***************************************************************
+
+                function Hash() {
+                    var length = 0;
+                    this.add = function(key, val) {
+                        if (this[key] == undefined)
+                        {
+                            length++;
+                        }
+                        this[key] = val;
+                    };
+                    this.length = function() {
+                        return length;
+                    };
+                }
+                //***************************************************************
+                //*** 
+                //*** url: 'php/getimages.php',
+                //***************************************************************
+                function getAllImages() {
+                    //alert('gallery-ny.html getAllImages');
+                    try {
+                        TotalSlidesPages = 1;
+                        $.ajax({
+                            url: 'php/getimages.php',
+                            type: 'POST',
+                            async: false,
+                            cache: false,
+                            //contentType: false,
+                            processData: true,
+                            datatype: 'json', //   'text',  //     
+                            //datatype: 'text',  //   
+                            data: {pid: GetProjectId(), type: 'gallery'},
+                            success: function(data) {
+                                var count = 1;
+
+                                (jQuery).each(jQuery.parseJSON(data), function(key, value) {//JSON.parse(data) 
+                                    if (key == 'outarray') {
+                                        dbImagesArray = [];
+                                        $.each(value, function(key, value) {
+                                            console.log("gallery-ny.html  getAllImages()  read image: "
+                                                    + "id:  " + value.id + ":  " + value.image + "  text:===>" + value.text + "<==="
+                                                    + "  active:" + value.active + "  date:" + value.date
+                                                    + "<=================");
+                                            var pos = value.image.indexOf(".");
+                                            // adding tumb image
+                                            var tumb_img = value.image.substr(0, pos) + '_t.' + value.image.substr(pos + 1, value.image.length)
+                                            in_image = '<div class="box" style="" ><img id=' + count + ' src="images/gallery/' + tumb_img + '"/></div>';
+                                            console.log("gallery-ny.html read img: " + in_image);
+                                            $('<div class="box" style="" ><img alt="Klik på billedet" title="Klik på billedet" id=' + value.id + ' src="images/gallery/' + tumb_img + '"   /></div>').appendTo("#mid #gallery #slider");
+                                            dbImagesArray.push(value.image);
+                                            //  $(".overlay-img-wrap").append(' <img class="overl" src="images/gallery/' + value.image + '" width="640" height="480" border="0"  /> ');
+                                            count++;
+                                            //$(".overlay-img-wrap").append(' <img  src="images/gallery/' + value.image + '" width="640" height="480" border="0"  /> ');
+                                            // $("#slider div:first-child").click();
+                                            /*  $("#inner_image_wrap").css("height", '150px'); 
+                                             $("#inner_image_wrap").css("width", '150px'); 
+                                             */
+                                        });
+
+                                    }
+                                });
+
+                                //  alert($('#slider div img:first-child').attr('id'));
+                                /*var id=$('#slider div img:first-child').attr('id');
+                                 alert('..................'+$('#'+id).height()+'..................'+$('#'+id).width());
+                                 var newHeight=$('#slider div img:first-child').height+50;
+                                 var newWidth=$('#slider div img:first-child').width+20;
+                                 $("#inner_image_wrap").css("height", '150px'); 
+                                 $("#inner_image_wrap").css("width", '150px');*/
+                                //alert($("#slider div").attr('class'));
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+
+                                //jqXHR jqXHR = jqXHR; 
+                                console.log(">>>>>>>>>>>> error  textStatus:" + textStatus + " errorThrown:" + errorThrown);
+                            },
+                            beforeSend: function() {
+                                console.log(">>>>>>>>>>>> beforeSend");
+                                //$("#output_process").html("Uploading, please wait....");
+                            },
+                            complete: function() {
+                                console.log(">>>>>>>>>>>> complete");
+                                //$("#output_process").html("upload complete.");
+                            }
+                        }).done(function(data) {
+                            if (console && console.log) {
+                                console.log("Sample of data:", data.slice(0, 100));
+                            }
+                        });
+                    }
+                    catch (err) {
+                        alert(err.message);
+                    }
+                }
+                //***************************************************************
+                //*** 
+                //*** getAllOverlayImages',
+                //***************************************************************
+                function getAllOverlayImages(inImg) {
+                    // alert('getAllOverlayImages   inImg:' + inImg);
+
+                    $('div.overlay-img-wrap > img').remove();
+                    try {
+                        $.ajax({
+                            url: 'php/getimages.php',
+                            type: 'POST',
+                            async: false,
+                            cache: false,
+                            processData: true,
+                            datatype: 'json', //   'text',  //     
+                            data: {pid: GetProjectId(), type: 'gallery'},
+                            success: function(data) {
+                                var imgArray = [];
+                                mapOfImageText = new Object(); // or var map of image and text;
+                                (jQuery).each(jQuery.parseJSON(data), function(key, value) {//JSON.parse(data) 
+                                    if (key == 'outarray') {
+                                        $.each(value, function(key, value) {
+                                            console.log("gallery-ny.html read image: "
+                                                    + "id:  " + value.id + ":  " + value.image + "  id:  " + value.text
+                                                    + "  active:" + value.active + "  date:" + value.date
+                                                    );
+                                            imgArray.push(value.image);
+                                            mapOfImageText[value.image] = value.text;
+                                        });
+                                    }
+                                });
+                                // show first exact clicked image
+                                console.log('before:' + imgArray.length);
+                                var found = false;
+                                var notSelectedImageArray = [];
+                                for (var i = 0; i < imgArray.length; i++) {
+                                    if (imgArray[ i ] === inImg) {
+                                        found = true;
+                                        $(".overlay-counter").append("<div style='text-align: center; height:20px;'>" + (i + 1) + "/" + imgArray.length + "</div>");
+                                        $(".overlay-desc").append("<div style='text-align: center; height:20px;'>" + mapOfImageText[imgArray[ i ]] + "</div>");
+
+                                    }
+                                    if (found) {
+                                        $(".overlay-img-wrap").append(' <img src="images/gallery/' + imgArray[ i ] + '"  border="0"  /> ');
+                                        console.log(' add to overlag: ' + imgArray[ i ]);
+                                    }
+                                    else {
+                                        notSelectedImageArray.push(imgArray[ i ]);
+                                        console.log(' first match not found: ' + imgArray[ i ]);
+                                    }
+                                }
+                                for (var i = 0; i < notSelectedImageArray.length; i++)
+                                    $(".overlay-img-wrap").append(' <img  src="images/gallery/' + notSelectedImageArray[ i ] + '" border="0"  /> ');
+                                notSelectedImageArray.length = 0
+                                imgArray.length = 0
+                                console.log('efter:' + imgArray.length);
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+
+
+                                console.log(">>>>>>>>>>>> error  textStatus:" + textStatus + " errorThrown:" + errorThrown);
+                            },
+                            beforeSend: function() {
+                                console.log(">>>>>>>>>>>> beforeSend");
+                                //$("#output_process").html("Uploading, please wait....");
+                            },
+                            complete: function() {
+                                console.log(">>>>>>>>>>>> complete");
+                                //$("#output_process").html("upload complete.");
+                            }
+                        }).done(function(data) {
+                            if (console && console.log) {
+                                console.log("Sample of data:", data.slice(0, 100));
+                            }
+                        });
+                    }
+                    catch (err) {
+                        alert(err.message);
+                    }
+                }
+
+                /**************************************/
+
+
+                /**************************************/
+                /*********************************/
+                $("#target1").click(function() {
+                    //alert('target1');
+                    $("#mid").css("background-color", $("#bgcolorid").val());
+                    $("content").css("background-color", $("#bgcolorid").val());
+                    $("#image_wrap").css("background-color", $("#bgcolorid").val());
+                });
+
+                window.selectedGalleryItemId = "";
+                getsectionhead(GetProjectId(), 'fotterCol1Head');// 'all');//
+                getsectiontext(GetProjectId(), 'fotterCol1');// 'fotterCol1');
+                getsectionhead(GetProjectId(), 'fotterCol2Head');// 'all');//
+                getsectiontext(GetProjectId(), 'fotterCol2');// 'fotterCol1');
+                getsectionhead(GetProjectId(), 'fotterCol3Head');// 'all');//
+                getsectiontext(GetProjectId(), 'fotterCol3');// 'fotterCol1');
+
+
+
+
+            });//Doc.ready
+        </script>
+
+
+    </head>
+    <!-------------------------------------------------------->
+    <!-------------------------BODY------------------------->
+    <!-------------------------------------------------------->
+    <body>
+        <!--div class="overlay"></div--!> 
+        
+     <content>
+           
+        <header>
+            <div class="header_box" >
+                <a  id="logo"></a>
+                <div id="titeltextdiv" >
+                    <h2 id="titeltext">Susanne Egfjord</h2>
+                </div>
+                <!--******   search box    ******-->	   
+
+                <div class="search_box">
+                    <div id="search_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <input id="search_box_input_username" class="textfield" type="text" name="username" value="">
+                            <button class="button_search" type="submit">
+                                <div>
+                                    <!--div>
+                                        search
+                                    </div-->
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!--******   login    ******-->	
+                <div id="login_box_gallery">
+                    <div id="login_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <label id="login_box_top_label_medlem">Medlem</label>
+                            <input id="login_box_input_username" class="textfield" type="text" name="username" value="">
+                            <input id="login_box_input_password" class="textfield" type="password" name="password" value="">
+                            <button class="button_s16" type="submit">
+                                <div>
+                                    <div>
+                                        Login
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="login_box_bottom">
+                        <ul>
+                            <li><a href="#" ></a></li>
+                            <li><a href="#" ></a></li>
+                            <li><a href="/dk-da/bli_medlem" class="login_box_blev_medlem">Bliv medlem</a></li>
+                            <li><a href="/dk-da/info/medlem/glomt_losenord">Glemt adgangskode?</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+        <div class="mainHeader" style=" left:0px;border:10px;">
+            <nav>
+                <ul class="nav_pull_left">
+                    <li><a href="index.html">Forside</a></li>
+                    <li><a href="gallery-ny.html">Galleri</a></li>
+                    <li><a href="nyheder.html">Nyheder</a></li>
+                    <li  id="uploadNavHorizantal"><a href="upload.html">Upload</a></li>
+                    <li><a href="contact.html" >Kontakt</a></li>
+                    </a></li>
+                </ul>
+                <ul class="nav_pull_right">
+                    <li class="usertype" > <p class="typeOfUser"></p></li>
+                    <!--li class="region-sweden"  id="se"> <a class="sweden"  href="#"></a></li-->
+                    <li class="region-denmark" id="dk"> <a class="denmark" href="#"></a></li>		
+                </ul>
+            </nav>
+        </div>
+
+        <!--div class="maincontent"   --->
+            <!--------------------- Center --------------------->
+            <!--------------------- Center ----overlay-img-wrap----------------->
+            <!--------------------- Center --------------------->
+            <!-------------->
+            <!-- overlays -->
+            <!-------------->
+            <div class="overlay">
+                <div id="overlay-enlarg-div"  style="background-color:red; width: 100px; height: 100px;"></div>  
+              <img src="images/close2.png" class="overlay-enlarg-close" alt="Close"/> 
+            </div>
+            <div class="simple_overlay" /*id="frog1"*/>
+                <div class="overlay-img-grp-wrap">
+                    <div class="overlay-img-wrap">
+                        <!--img  src="images/gallery/03.jpg" width="640" height="480" border="0"  /> <!-- This is the last image in the slideshow -->
+                        <!--img  src="http://farm1.static.flickr.com/143/321464099_a7cfcb95cf.jpg" width="640" height="480" border="0"  /> <!-- This is the last image in the slideshow -->
+                        <!--img  src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730.jpg"width="640" height="480" border="0"/>
+                        <img  src="http://farm1.static.flickr.com/79/244441862_08ec9b6b49.jpg" width="640" height="480" border="0"/>
+                        <img  src="http://farm1.static.flickr.com/28/66523124_b468cf4978.jpg"  width="640" height="480" border="0"/>
+                        <img  src="http://farm1.static.flickr.com/163/399223609_db47d35b7c.jpg" width="640" height="480" border="0"/>
+                        <img  src="http://farm1.static.flickr.com/135/321464104_c010dbf34c.jpg" width="640" height="480" border="0"/>
+                        <img  src="http://farm1.static.flickr.com/40/117346184_9760f3aabc.jpg" width="640" height="480" border="0"/>
+                        <img  src="http://farm1.static.flickr.com/153/399232237_6928a527c1.jpg" width="640" height="480" border="0"/> <!-- This is the first image in the slideshow -->
+                    </div>
+                    <div class="overlay-counter"></div>
+                    <div class="overlay-desc" ></div>                     
+                </div>
+                <img src="images/arrowright.jpg"    class="overlay-next" alt="Next"/> 
+                <img src="images/arrowleft.jpg"     class="overlay-prev" alt="Previous"/> 
+                <img src="images/Icon_27-128.png"   class="overlay-enlarg" alt="Enlarg"/> 
+                <img src="images/close2.png"        class="overlay-close" alt="Close"/> 
+                <!--/div-->
+            </div>
+            <!-- end overlays -->
+            
+            
+            <!-- slider clicked picture-->
+            <div id="image_wrap">
+                <div>
+                    <button id="target1"  style="float:left; background-color:gray; width:140px;"  type="button">background color</button>
+                    <input type="text" id="bgcolorid" value="#0000ff" width="60px" style="width:60px; float:left;">
+                </div>    
+                <!-- Initially the image is a simple 1x1 pixel transparent GIF -->
+                <!--img src="media/img/blank.gif" width="500" height="375"   rel="#frog1" /-->
+                <div id="inner_image_wrap" >
+                    <p id="divText" ></p>
+                    <img src="media/img/blank.gif" /*rel="#frog1"*/ />
+                </div>
+            </div>
+            <!-- end slider clicked picture-->
+
+
+            <div id="mid" border="0px"  >
+                <div id="gallery"   >
+                    <!-- -->
+                    <!-- -->
+                    <div id="slider">
+                        <!--div class="box" style="" ><img   class="bla1" src="images/gallery/04_t.jpg"   /></div>
+                        <div class="box" style=""><img class="bla0" src="images/gallery/03_t.jpg"   /></div>
+                        <div class="box" style=""><img class="bla0" src="http://farm1.static.flickr.com/143/321464099_a7cfcb95cf_t.jpg"   /></div>
+                        <div class="box" style=""><img class="bla1"  src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg"  /></div>
+                        <div class="box" style=""><img class="bla2"  src="http://farm1.static.flickr.com/79/244441862_08ec9b6b49_t.jpg" /></div>
+                        <div class="box" style=""><img class="bla3" src="http://farm1.static.flickr.com/28/66523124_b468cf4978_t.jpg"  /></div>
+                        <div class="box" style=""><img class="bla4" src="http://farm1.static.flickr.com/163/399223609_db47d35b7c_t.jpg" /></div>
+                        <div class="box" style=""><img class="bla5" src="http://farm1.static.flickr.com/135/321464104_c010dbf34c_t.jpg" /></div>
+                        <div class="box" style=""><img class="bla6" src="http://farm1.static.flickr.com/40/117346184_9760f3aabc_t.jpg" /></div>
+                        <div class="box" style=""><img class="bla7" src="http://farm1.static.flickr.com/153/399232237_6928a527c1_t.jpg" /></div>
+                        <!-- -->
+                        <!--div class="box" style="" ><img class="bla0" src="http://farm1.static.flickr.com/143/321464099_a7cfcb95cf_t.jpg"   /></div>
+                        <div class="box" style=""><img class="bla1"  src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg"  /></div>
+                        <div class="box" style=""><img class="bla2"  src="http://farm1.static.flickr.com/79/244441862_08ec9b6b49_t.jpg" /></div>
+                        <div class="box" style="" ><img class="bla3" src="http://farm1.static.flickr.com/28/66523124_b468cf4978_t.jpg"  /></div>
+                        <div class="box" style=""><img class="bla4" src="http://farm1.static.flickr.com/163/399223609_db47d35b7c_t.jpg" /></div>
+                        <div class="box" style=""><img class="bla5" src="http://farm1.static.flickr.com/135/321464104_c010dbf34c_t.jpg" /></div>
+                        <div class="box" style="" ><img class="bla6" src="http://farm1.static.flickr.com/40/117346184_9760f3aabc_t.jpg" /></div>
+                        <div class="box" style=""><img class="bla7" src="http://farm1.static.flickr.com/153/399232237_6928a527c1_t.jpg" /></div>
+                        <!-- -->
+                    </div>
+
+                    <!--div class="btn btn_left"></div>
+                    <div class="btn btn_right"></div-->
+
+                    <img src="images/black_next.png" class="btn btn_right" alt="Next"/> 
+                    <img src="images/black_prev.png"  class="btn btn_left" alt="Previous"/> 
+                    <!--a class="fssPrev" href="#">Prev</a--> 
+                    <!--img id="fssNext" ></img>
+                    <img id="fssPrev" ></img-->
+                    <!--img src="images/arrows.png" id="fssPrev" alt="Next"/--> 
+
+
+                </div>
+            </div>
+
+
+            <!----------------------Center End------------------->
+        <!--/div-->
+        <footer >
+            <section class="first">
+                <p style="color:white; font-size: 10px;">&copy;Kunstnergaden</p>
+                <p style="color:white; font-size: 10px;">&copy;Rørholmsgade i Kbh.K</p>
+                <p id="kunstLink">&copy; <a style="color:white; font-size: 10px;"  href="http://www.roerholmsgade.com/">Roerholmsgade KBH</a></p>
+
+            </section>
+            
+
+            <section>
+                <h3 id='fotterCol1Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol1' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section> 
+
+            <section>
+                <h3 id='fotterCol2Head'  rel="#prompt">nested footer section</h3>
+                <p id='fotterCol2' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>
+
+            <section>
+                <h3 id='fotterCol3Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol3' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>  
+
+
+            <br class="clearing">        
+        </footer>
+    </content>   
+    <!-- ******************************************************************** -->
+    <!--                                user overlay                          -->
+    <!-- ******************************************************************** -->
+    <div class="modal" id="prompt">
+        <h2>This is a modal dialog</h2>
+
+        <!-- input form. you can press enter too -->
+        <form id="target">
+            <table class="texttable" border="1" >
+                <tr>
+                    <th width="60%" height="20px">Info Text</th>
+                    <th width="10%">Font</th>
+                    <th width="10%">F.Size</th>
+                    <th width="10%">FWeight</th>
+                    <th width="10%">Color</th>
+                </tr> 
+                <tr  valign="top" class="texttable_text_row">
+                    <td width="60%"  height="60px" ><textarea id="section1" width="100%" maxlength="800" rows="4" cols="60%"></textarea></td> <!--   -->
+                    <td width="10%">
+                        <SELECT  id="selSilverectFont"   style="width:100%;" name="font">
+                        </SELECT> 
+                    </td>
+                    <td width="10%" >
+                        <SELECT   id="selectFSize"  style="width:100%;" name="fsize">
+                        </SELECT>    
+                    </td>
+                    <td width="10%">
+                        <SELECT  id="selectFWeight" style="width:100%;"name="fweight">
+                        </SELECT>   
+                    </td>
+                    <td id="selectFColorId"  width="10%">
+                        <SELECT id="selectFColor"style="width:100%;"name="color">
+                        </SELECT>   
+                    </td>
+                </tr>
+                <tr >
+                    <td align="right" colspan="4"><button type="button" class="close"> close </button></td>
+                    <td align="right"><button class="btnSave" type="submit"  >Save</button></td>
+                </tr>
+            </table>
+        </form>
+        <br />
+    </div>
+
+</body>
+</html>
+

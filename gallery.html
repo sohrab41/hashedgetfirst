@@ -1,0 +1,416 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>SlideShow</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+        <link href="css/menu.css"  rel="stylesheet" type="text/css" media="screen">
+        <link href="css/flags.css"  rel="stylesheet" type="text/css" >
+        <link href="css/slideshow.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="css/fadeSlideShow.css" />
+        <!-- standalone page styling (can be removed) -->
+        <link rel="shortcut icon" href="media/img/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="media/css/standalone.css"/>
+        <link rel="stylesheet" type="text/css" href="media/css/scrollable-horizontal.css" />
+        <link rel="stylesheet" type="text/css" href="media/css/scrollable-buttons.css" />
+
+        <!--script type="text/javascript" src="js/jquery-1.11.0.min.js"></script-->
+
+        <!-- include the Tools -->
+        <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+
+
+        <script type="text/javascript" src="js/jquery.session.js"></script>                                         
+        <script type="text/javascript"   src="js/utilities.js"></script>
+        
+
+
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <style>
+            .search_box{
+                display: none;
+            }
+        </style>
+        <!-- enable th jQuerry -->
+        <style>
+            .maincontent { margin-left:160px; height:1175px; /*background:#ff0;*/}
+            .datagrid{
+                height: 1125px;
+            }
+            #output_process{
+                color: red; border-left: 1px solid #E1EEF4;font-size: 15px;font-weight: bold;
+            }
+            .datagrid table { border-collapse: collapse; 
+                              text-align:left; 
+                              width: 100%; 
+            } 
+            .datagrid table tbody td { color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+            .datagrid {
+                font: normal 12px/150% Arial,Helvetica, sans-serif; 
+                background: #fff; 
+                overflow: hidden; 
+                border: 1px solid #006699; 
+                -webkit-border-radius: 3px; 
+                -moz-border-radius: 3px; 
+                border-radius: 3px; 
+            }
+            .datagrid table td, .datagrid table th { 
+                padding: 1px 1px; 
+            }
+            .datagrid table thead th 
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699),color-stop(1, #00557F) );
+                background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );
+                filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');
+                background-color:#006699; 
+                color:#FFFFFF; 
+                font-size: 15px; 
+                font-weight: bold; 
+                border-left: 1px solid #0070A8;     
+            }
+            .buttongrid table tbody td { height: 15px; color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+            .datagrid table tbody td { color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+            .datagrid table tbody .alt td { background: #E1EEF4; color: #00496B; }
+            .datagrid table tbody td:first-child { border-left: none; }
+            .datagrid table tbody tr:last-child td { border-bottom: none; }
+            .datagrid table tfoot { border-top: 1px solid #006699;background: #E1EEF4;} 
+            .datagrid table tfoot { border-top: 0px solid #006699;background: #E1EEF4;} 
+            nav .upload_button li{
+                display: inline;
+                list-style-type: none;
+                padding-right: 120px;
+
+            }
+            .activcolumn{
+                margin-bottom: 1px;color: #FFFFFF;
+                padding-bottom: 10px; 
+                background-color:#fff;
+
+            }
+            th.activcolumnhedder{
+                width: 5px;
+                padding-left: 50px 0px #0070A8; ;
+
+            }
+        </style>
+
+
+        <style>
+            /* styling for the image wrapper  */
+            #image_wrap {
+                /* dimensions */
+                width:700px;
+                padding:15px 0;
+
+                /* centered */
+                text-align:center;
+
+                /* some "skinning" */
+                background-color:#efefef;
+                border:2px solid #fff;
+                outline:1px solid #ddd;
+                -moz-ouline-radius:4px;
+            }
+        </style>
+        <!-- slider end -->
+    </head>
+    <body>	
+    <content>
+        <header>
+            <div class="header_box">
+                <!--a href="#" id="logo">Home</a-->
+                <a href="center" id="logo"></a>
+                <div style="color:#FFF; font-size:200%; margin-left:140px; margin-top:15px; ">
+                    <h2>Susanne Egfjord Galleri</h2>
+                </div>
+                <!--******   search box    ******-->	   
+
+                <div class="search_box">
+                    <div id="search_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <input id="search_box_input_username" class="textfield" type="text" name="username" value="">
+                            <button class="button_search" type="submit">
+                                <div>
+                                    <!--div>
+                                        search
+                                    </div-->
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!--******   login    ******-->	
+                <div id="login_box">
+                    <div id="login_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <label id="login_box_top_label_medlem">Medlem</label>
+                            <input id="login_box_input_username" class="textfield" type="text" name="username" value="">
+                            <input id="login_box_input_password" class="textfield" type="password" name="password" value="">
+                            <button class="button_s16" type="submit">
+                                <div>
+                                    <div>
+                                        Login
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="login_box_bottom">
+                        <ul>
+                            <li><a href="#" ></a></li>
+                            <li><a href="#" ></a></li>
+                            <li><a href="/dk-da/bli_medlem" class="login_box_blev_medlem">Bliv medlem</a></li>
+                            <li><a href="/dk-da/info/medlem/glomt_losenord">Glemt adgangskode?</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </header>
+        <!--******   menu line left/right    ******-->	
+        <header class="mainHeader">
+            <nav>
+                <ul class="nav_pull_left">
+                    <li><a href="index.html">Forside</a></li>
+                    <li><a href="gallery_V1.html">Gallery</a></li>
+                    <li><a href="nyheder.html">Nyheder</a></li>
+                    <li><a href="inspiration.html">Inspiration</a></li>
+                    <li><a href="kunstner.html">Kunstner</a></li>
+                    <li><a href="gallerydb.html">Gallerydb</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="contact.html" >Kontakt</a></li>
+                    </a></li>
+                </ul>
+                <ul class="nav_pull_right">
+                    <li class="region-sweden"  id="se"> <a class="sweden"  href="#"></a></li>
+                    <li class="region-denmark" id="dk"> <a class="denmark" href="#"></a></li>		
+                </ul>
+            </nav>
+        </header><!--class="mainHeader-->
+
+
+        <div class="colwrapper">
+            <div class="ltcol">
+                <!-- Left -->
+                <div id="left_first_vertical_nav_div" >
+                    <ul id="left_first_vertical_nav">
+                        <li><a href="index"><img src="images/empty.gif" />Forside</a></li>
+                        <li><a href="gallery_V1.html" class="sub" tabindex="1"><img src="images/empty.gif" />Gallery</a><!--img src="images/up.gif" alt="" /-->
+                        </li>
+                        <li><a href="nyheder.html"><img src="images/empty.gif" />Nyheder</a></li>
+                        <li><a href="inspiration.html"><img src="images/empty.gif" />Inspiration</a></li>
+                        <li><a href="kunstner.html"><img src="images/empty.gif" />Kunstner</a></li>
+                        <li><a href="gallerydb.html"><img src="images/empty.gif" />Gallerydb</a></li>
+                        <li><a href="upload.html"><img src="images/empty.gif" />Upload</a></li>
+                        <li><a href="contact.html"><img src="images/empty.gif" />Kontakt</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="maincontent" >
+            <!--------------------- Center --------------------->
+
+            <div id="image_wrap">
+                <!-- Initially the image is a simple 1x1 pixel transparent GIF -->
+                <img src="media/img/blank.gif" width="500" height="375" />
+            </div>
+
+            <!-- HTML structures -->
+            <div style="margin:0 auto; width: 634px; height:120px;">
+                <!-- "previous page" action -->
+                <a class="prev browse left"></a>
+
+                <!-- root element for scrollable -->
+                <div class="scrollable" id="scrollable">
+
+                    <!-- root element for the items -->
+                    <div class="items">
+
+                        <div class="items1">
+                            <img class="section" src="http://farm1.static.flickr.com/143/321464099_a7cfcb95cf_t.jpg" />
+                        </div>
+                        <div class="items2">
+                            <img class="section" src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg" />
+                        </div>
+                        <div class="items3"v>
+                            <img class="section" src="http://farm1.static.flickr.com/79/244441862_08ec9b6b49_t.jpg" />
+                        </div>
+                        <div class="items4">
+                            <img class="section" src="http://farm1.static.flickr.com/28/66523124_b468cf4978_t.jpg" />
+                        </div>
+                        <div class="items5">
+                            <img class="section" src="http://farm1.static.flickr.com/163/399223609_db47d35b7c_t.jpg" />
+                        </div>
+                        <div class="items6">
+                            <img class="section" src="http://farm1.static.flickr.com/135/321464104_c010dbf34c_t.jpg" />
+                        </div>
+                        <div class="items7">
+                            <img class="section" src="http://farm1.static.flickr.com/40/117346184_9760f3aabc_t.jpg" />
+                        </div>
+                        <div class="items8">
+                            <img class="section" src="http://farm1.static.flickr.com/153/399232237_6928a527c1_t.jpg" />
+                        </div>
+                    </div>
+                </div>
+                <!-- "next page" action -->
+                <a class="next browse right"></a>
+            </div>
+            <!-- script -- script -- script -- script -- -->
+            <script language="javascript">
+                jQuery(document).ready(function($) {
+                    var typeOfUser = $.session.get('userType');
+                    $(".scrollable").scrollable();
+                    var projectid = GetProjectId();
+                    var $currElement = $(".items1");
+                    //$currElement = $currElement.next();
+                    //$currElement.children('img').css("background-color", "red");
+                    console.log('0 Next  currElement(section).length:  ' + $currElement.children('img').length);
+                    //****************
+                    //next  & Prev  
+                    //****************
+                    $("a").click(function() {
+                        console.log('$currElement.attr(class) B next prev:'+$currElement.attr("class")+' index:'+$(this).attr("class").indexOf("right") );
+                        //$( ".scrollable" ).css( "border", "11px solid red" );
+                        if ($(this).attr("class").indexOf("right") >= 0 ){
+                            $currElement = $currElement.next();
+                        }
+                        else{
+                       
+                            $currElement = $currElement.prev();
+                        }
+
+                        console.log('$currElement.attr(class) E next prev:'+$currElement.attr("class"));
+                        console.log('==1==>' + $currElement.index());
+                        //  console.log('==2==>'+ $(".items1").index( 4 ).attr("src"));
+
+                        // console.log('====>'+ $('.items .active').index());
+                       $currElement.children('img').click();
+                    });//end click  
+                    
+                 
+                    
+                    $(".items img").click(function() {
+                        console.log('.items img  click src: ' + $(this).attr("src"));
+                        // see if same thumb is being clicked
+                        if ($(this).hasClass("active")) {
+                            return;
+                        }
+                     //$currElement  =  $("this").parent();
+                     console.log('$currElement.attr(class):'+$currElement.attr("class"));
+                        // calclulate large image's URL based on the thumbnail URL (flickr specific)
+                        var url = $(this).attr("src").replace("_t", "");
+
+                        // get handle to element that wraps the image and make it semi-transparent
+                        var wrap = $("#image_wrap").fadeTo("medium", 0.5);
+
+                        // the large image from www.flickr.com
+                        var img = new Image();
+
+
+                        // call this function after it's loaded
+                        img.onload = function() {
+
+                            // make wrapper fully visible
+                            wrap.fadeTo("fast", 1);
+
+                            // change the image
+                            wrap.find("img").attr("src", url);
+
+                        }; 
+
+                        // begin loading the image from www.flickr.com
+                        img.src = url;
+
+                        // activate item
+                        $(".items img").removeClass("active");
+                        $(this).addClass("active");
+                      //  $currElement.children('img').addClass("active"); 
+                      //  console.log('1 :'+$this.children('img').attr("class"));
+console.log('this.attr :'+$(this).attr("src"));
+console.log('this.parent :'+$(this).parent().attr("class"));
+//console.log('this.parent :'+$(".items img").parent().attr("class"));
+$currElement=$(this).parent();
+console.log('current.attr(class) :'+$currElement.attr("class"));
+                        // when page loads simulate a "click" on the first image
+                    }).filter(":first").click();
+                });
+            </script>
+
+            <!----------------------Center End------------------->
+            <!----------------------Center End------------------->
+            <!----------------------Center End------------------->
+            <!----------------------Center End------------------->
+        </div>
+        <footer>
+            <section class="first">
+                <p>&copy;2014 SlideShow</p>
+                <p>&copy;Mobil:</p>
+                <p>&copy;Galleri & Atelier E</p>
+            </section>
+
+            <section>
+                <h3 id='fotterCol1Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol1' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section> 
+
+            <section>
+                <h3 id='fotterCol2Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol2' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>
+
+            <section>
+                <h3 id='fotterCol3Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol3' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>  
+
+            <br class="clearing">        
+        </footer>
+    </content>   
+    <!-- ******************************************************************** -->
+    <!--                                user overlay                          -->
+    <!-- ******************************************************************** -->
+    <div class="modal" id="prompt">
+        <h2>This is a modal dialog</h2>
+
+        <!-- input form. you can press enter too -->
+        <form id="target">
+            <table class="texttable" border="1" >
+                <tr>
+                    <th width="60%" height="20px">Info Text</th>
+                    <th width="10%">Font</th>
+                    <th width="10%">F.Size</th>
+                    <th width="10%">FWeight</th>
+                    <th width="10%">Color</th>
+                </tr> 
+                <tr  valign="top" class="texttable_text_row">
+                    <td width="60%"  height="60px" ><textarea id="section1" width="100%" maxlength="800" rows="4" cols="60%"></textarea></td> <!--   -->
+                    <td width="10%">
+                        <SELECT  id="selectFont"   style="width:100%;" name="font">
+                        </SELECT> 
+                    </td>
+                    <td width="10%" >
+                        <SELECT   id="selectFSize"  style="width:100%;" name="fsize">
+                        </SELECT>    
+                    </td>
+                    <td width="10%">
+                        <SELECT  id="selectFWeight" style="width:100%;"name="fweight">
+                        </SELECT>   
+                    </td>
+                    <td id="selectFColorId"  width="10%">
+                        <SELECT id="selectFColor"style="width:100%;"name="color">
+                        </SELECT>   
+                    </td>
+                </tr>
+                <tr >
+                    <td align="right" colspan="4"><button type="button" class="close"> close </button></td>
+                    <td align="right"><button class="btnSave" type="submit"  >Save</button></td>
+                </tr>
+            </table>
+        </form>
+        <br />
+    </div>
+</body>
+</html>

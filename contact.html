@@ -1,0 +1,491 @@
+<!DOCTYPE HTML>
+<?php
+session_start();
+$user= $_SESSION["userType"];
+?>
+<!--http://cortrium.com/?page_id=616#contact  -->
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>SlideShow</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+        <link href="css/menu.css"  rel="stylesheet" type="text/css" media="screen">
+        <link href="css/flags.css"  rel="stylesheet" type="text/css" >
+        <link href="css/slideshow.css" rel="stylesheet" type="text/css">
+        <link href="css/contact.css" rel="stylesheet" type="text/css">
+
+        <script type="text/javascript" src="js/jquery.tools-1.2.8.min.js"></script>
+        <script type="text/javascript" src="js/gallery.js"></script>
+        <script type="text/javascript" src="js/jquery.session.js"></script>   
+         <script type="text/javascript" src="js/utilities.js"></script>
+
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <style>
+            .search_box{
+                display: none;
+            }
+            .typeOfUser{
+                color:white;
+            }
+            .kontakt{
+                font-family: Arial,'Lucida Grande', Helvetica,  sans-serif; font-size: 11pt;
+            }
+            #infoDiv{
+                background-color: paleturquoise;
+
+            }
+            .ltcol{height:800px;  width:178px; margin:0px 0px 0px 4px; padding:0px 0px 0px 0px; background-color: #efefef }
+            .ltcol { float:left; }
+
+            #contact_form{
+                background-color:paleturquoise;
+                width: 50%;
+                margin-top: 0px;
+
+            }
+
+            #message{
+                min-height:50px;
+                min-width:70%;
+                height:auto;
+                border-radius:5px;
+                background:white;
+                margin-bottom: 5px;
+                padding: 3px 5px;
+                /*text-align: justify;*/
+            }
+            #login_box{
+                display: none;
+            }
+            #titeltextdiv{
+                color:#FFF; 
+                font-size:200%; 
+                margin-left:30%; 
+                margin-top:15px;
+            }
+            #fotterCol1Head, #fotterCol2Head, #fotterCol3Head{
+                height:25px; 
+                display: block;
+                text-align: center;
+                /*background-color:blue;*/
+            } 
+            
+            #fotterCol1,#fotterCol2,#fotterCol3{
+                text-align: center;
+            }
+        </style>
+        <script language="javascript">
+            jQuery(window).load(function() {
+                var typeOfUser = $.session.get('userType');
+                //alert(' loaded   nyheder   typeOfUser: ' + typeOfUser);
+                if (typeOfUser === 'admin')
+                    $(".typeOfUser").text(typeOfUser);
+                else {
+                    // $(".typeOfUser").text('unkown');
+                    $("#uploadNavHorizantal").css('display', 'none');
+                    $("#uploadNavVertical").css('display', 'none');
+                    $("#createNyhed").css('display', 'none');
+                }
+            });
+            jQuery(document).ready(function($) {
+                window.loadOverlay = 0;
+                $("#selectFColor").change(function() {
+                    var str = "";
+                    $("#selectFColor option:selected").each(function() {
+                        str += $(this).val() + " ";
+                    });
+                    $('#selectFColorId').css('background-color', $(this).val());
+                })
+                        .trigger("change");
+
+                try {
+                    //***********************************************************************
+                    //****  Func: fillOneDopdownList
+                    //***********************************************************************
+                    window.selectedGalleryItemId = "";
+                    window.selectedGalleryItemId = "";
+                    getsectionhead(GetProjectId(), 'fotterCol1Head');// 'all');//
+                    getsectiontext(GetProjectId(), 'fotterCol1');// 'fotterCol1');
+                    getsectionhead(GetProjectId(), 'fotterCol2Head');// 'all');//
+                    getsectiontext(GetProjectId(), 'fotterCol2');// 'fotterCol1');
+                    getsectionhead(GetProjectId(), 'fotterCol3Head');// 'all');//
+                    getsectiontext(GetProjectId(), 'fotterCol3');// 'fotterCol1');
+
+
+                } catch (e) {
+                    alert("exception:" + e);
+                }
+
+                //******************************************
+                function a(str) {
+                    alert(str);
+                }
+                //** *************************************************
+                //** Function: 
+                //**
+                //** *************************************************
+                window.a = a;
+                $("#target").submit(function(e) {
+                    if (window.loadOverlay < 1) {
+                        // alert('submit:  ' + window.selectedGalleryItemId + "  target.submit  ");
+                        $('#' + window.selectedGalleryItemId).css('font-size', $('#selectFSize').val() + 'px');
+                        $('#' + window.selectedGalleryItemId).css('color', $('#selectFColor').val());
+                        $('#' + window.selectedGalleryItemId).css("font-family", changeFirstCharecter($('#selectFont').val()));
+                        $('#' + window.selectedGalleryItemId).css("font-weight", $('#selectFWeight').val());//$('#selectFWeight').val()
+                        var itemId = window.selectedGalleryItemId;
+                        if (itemId.indexOf("Head") >= 0) {
+                            saveSectionHead(window.selectedGalleryItemId);
+                            //alert('saveSectionHead id : ' + window.selectedGalleryItemId.toLowerCase());
+                        }
+                        else {
+                            // alert('saveSectionText id : ' + window.selectedGalleryItemId.toLowerCase());
+                            saveSectionText(window.selectedGalleryItemId);
+                        }
+
+                        closeModal();
+                        window.selectedGalleryItemId = "";
+                    }
+                    return e.preventDefault();
+
+                });
+                /*** ************************************************************ ***
+                 *** 
+                 *** @returns {undefined}
+                 *** ************************************************************ ***/
+                function closeModal() {
+                    if (currentModal) {
+                        if (currentModal.isOpened) {
+                            currentModal.close();
+                            /// alert('inside closeModal');
+                        }
+                    }
+                    //$('#openButton').removeAttr('disabled');
+                }
+                /*** ************************************************************ ***/
+                //fillDopdownList();
+                /*fillOneDopdownList('font', '#selectFont', '');
+                 fillOneDopdownList('fontcolor', '#selectFColor', '');
+                 fillOneDopdownList('fontsize', '#selectFSize', '');
+                 fillOneDopdownList('fontweight', '#selectFWeight', '');
+                 
+                 */
+                $("#target1").click(function() {
+                    var cc = $("#bgcolorid").val();
+                    //alert( "Handler for .click() called." +cc);
+                    $('content').css("background-color", cc);
+                });
+                $("#target2").click(function() {
+                    var cc = $("#bgcolorid2").val();
+                    $('.colwrapper').css("background-color", cc);
+                    $('.ltcol').css("background-color", cc);
+                    $('#left_first_vertical_nav li a.sub ').css("background-color", cc);
+
+                });
+                $("#target3").click(function() {
+                    var cc = $("#bgcolorid3").val();
+                    // alert( "Handler for .click() mainHeader called.target3 : " +cc);
+                    $(' .mainHeader nav ').css("background-color", cc);
+                });
+                $("#target4").click(function() {
+                    var cc = $("#bgcolorid4").val();
+                    //alert( "Handler for .click() mainHeader called.target4 : " +cc);
+                    $('header div.header_box ').css("background-color", cc);
+                });
+                $("#target5").click(function() {
+                    var cc = $("#bgcolorid5").val();
+                    // alert("Handler for .click() mainHeader called.target4 : " + cc);
+                    $('footer section').css("background-color", cc);
+                    $('footer').css("background-color", cc);
+                });
+                $(".firstsection, .firstsectionhedder").on("click", function() {
+                    a('text click');
+                });
+                /*** ************************************************************ ***/
+
+                //________End Center_____
+                $(".slidetabs").on("click", function() {
+                    a('slidetabs');
+                });
+
+
+                $(".slidetabs").tabs(".images > div", {
+                    //enable the "crass-fading" effect
+                    effect: 'fade',
+                    fadeOutSpeed: "slow",
+                    // start from the befinning after the last tab
+                    rotate: true
+                            //use the slideshow plugin. It accepts its own configuration 
+                }).slideshow();
+                $("#submit_btn").click(function() {
+                    // alert('submit_btn');
+                    $("#result").hide().html('<div class="error">' + 'udfyld venligst Fra felt' + '</div>').slideUp();
+                    //get input field values
+                    var user_name = $('input[name=name]').val();
+                    var user_email = $('input[name=email]').val();
+                    var user_phone = $('input[name=phone]').val();
+                    var user_message = $('textarea[name=message]').val();
+                    var short_text = $('input[name=shortText]').val();
+                    //simple validation at client's end
+                    //we simply change border color to red if empty field using .css()
+                    var proceed = true;
+                    if (user_name == "") {
+                        //  alert('user');
+                        console.log("user_name:" + user_name);
+                        //$('input[name=name]').css('border-color', 'red');
+                        $('input[name=name]').css('background-color', '#FFE4E1');
+                        $("#result").hide().html('<div class="error">' + 'udfyld venligst Fra felt' + '</div>').slideDown();
+                        proceed = false;
+                    }
+                    if (user_email == "") {
+                        console.log("user_email:" + user_email);
+                        $('input[name=email]').css('background-color', '#FFE4E1');
+                        $("#result").hide().html('<div class="error">' + 'udfyld venligst email felt' + '</div>').slideDown();
+                        proceed = false;
+                    }
+                    /* if (user_phone == "") {
+                     console.log("user_phone:" + user_phone);
+                     $('input[name=phone]').css('background-color', '#FFE4E1');
+                     $("#result").hide().html('<div class="error">' + 'udfyld venligst Phone felt' + '</div>').slideDown();
+                     proceed = false;
+                     }*/
+                    if (user_message == "") {
+                        console.log("user_message:" + user_message);
+                        $('textarea[name=message]').css('background-color', '#FFE4E1');
+                        $("#result").hide().html('<div class="error">' + 'udfyld venligst message felt' + '</div>').slideDown();
+                        proceed = false;
+                    }
+
+                    //everything looks good! proceed...
+                    if (proceed)
+                    {
+                        //data to be sent to server
+                        //post_data = {'userName': user_name, 'userEmail': user_email, 'userPhone': user_phone, 'userMessage': user_message};
+                        post_data = {'userName': user_name, 'userEmail': user_email, 'userPhone': user_phone, 'userMessage': user_message, 'shortText': short_text};
+                        //Ajax post data to server
+                        $.post('php/mail.php', post_data, function(data) {
+
+                            //load success massage in #result div element, with slide effect.       
+                            $("#result").hide().html('<div class="success">' + data + '</div>').slideDown();
+
+                            //reset values in all input fields
+                            $('#contact_form input').val('');
+                            $('#contact_form textarea').val('');
+
+                        }).fail(function(err) {  //load any error data
+                            $("#result").hide().html('<div class="error">' + err.statusText + '</div>').slideDown();
+                        });
+                        $("#email, #shortText, #name, #message ,#phone").css('border-color', '');
+                        $("#email, #shortText, #name, #message ,#phone").css("background-color", "white");
+                        $("#result").slideUp();
+
+                    }
+
+                });
+
+                $("#email, #shortText, #name, #message ,#phone").keyup(function() {
+                    $("#email, #shortText, #name, #message ,#phone").css('border-color', '');
+                    $("#email, #shortText, #name, #message ,#phone").css("background-color", "white");
+                    $("#result").slideUp();
+                });
+            });//Ready
+            //reset previously set border colors and hide all message on .keyup()
+
+
+
+        </script>
+    </head>
+    <body>	
+    <content  >
+        <header>
+            <div class="header_box">
+                <a id="logo"></a>
+                <div id="titeltextdiv" >
+                    <h2>Susanne Egfjord</h2>
+                </div>
+                <!--******   search box    ******-->	   
+
+                <div class="search_box">
+                    <div id="search_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <input id="search_box_input_username" class="textfield" type="text" name="username" value="">
+                            <button class="button_search" type="submit">
+                                <div>
+                                    <!--div>
+                                        search
+                                    </div-->
+                                </div>
+                            </button>
+                            <div id="search_box_div_select">
+                                <select id="search_box_select" name="SectionId">
+                                    <option value="">Alle kategorier</option>
+                                    <option value="1">Spil</option>
+                                    <option value="3">Hardware</option>
+                                    <option value="4">Software</option>
+                                    <option value="5">Forbrugerelektronik</option>
+                                    <option value="6">Husholdningsvarer</option>
+                                    <option value="7">Leg & Gadgets</option>
+                                </select>
+                                <a href="/dk-da/sok/" title="Avanceret søgning">Avanceret søgning</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <!--******   login    ******-->	
+                <div id="login_box">
+                    <!--div id="login_box_top">
+                        <form method="post" action="https://www.webhallen.com/dk-da/login.php">
+                            <label id="login_box_top_label_medlem">Medlem</label>
+                            <input id="login_box_input_username" class="textfield" type="text" name="username" value="">
+                            <input id="login_box_input_password" class="textfield" type="password" name="password" value="">
+                            <button class="button_s16" type="submit">
+                                <div>
+                                    <div>
+                                        Login
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                    </div-->
+                    <div class="login_box_bottom">
+                        <ul>
+                            <li><a href="#" ></a></li>
+                            <li><a href="#" ></a></li>
+                            <li><a href="/dk-da/bli_medlem" class="login_box_blev_medlem">Bliv medlem</a></li>
+                            <li><a href="/dk-da/info/medlem/glomt_losenord">Glemt adgangskode?</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </header>
+        <!--******   menu line left/right    ******-->	
+        <header class="mainHeader">
+            <nav>
+                <ul class="nav_pull_left">
+                    <li><a href="index.html">Forside</a></li>
+                    <li><a href="gallery-ny.html">Galleri</a></li>
+                    <li><a href="nyheder.html">Nyheder</a></li>
+                    <li  id="uploadNavHorizantal"><a href="upload.html">Upload</a></li>
+                    <li><a href="contact.html">Kontakt</a></li>
+                    </a></li>
+                </ul>
+                <ul class="nav_pull_right">
+                    <li class="usertype" > <p class="typeOfUser"></p></li>
+                    <!--li class="region-sweden"  id="se"> <a class="sweden"  href="#"></a></li-->
+                    <li class="region-denmark" id="dk"> <a class="denmark" href="#"></a></li>		
+                </ul>
+            </nav>
+        </header><!--class="mainHeader-->
+
+
+        <div class="colwrapper">
+            <div class="ltcol">
+                <!-- Left -->
+                <div id="left_first_vertical_nav_div" >
+                    <ul id="left_first_vertical_nav">
+                        <li><a href="index.html">Forside</a></li>
+                        <li><a href="gallery-ny.html" class="sub" tabindex="1">Galleri</a></li>
+                        <li><a href="nyheder.html">Nyheder</a></li>
+                        <li  id="uploadNavVertical"><a href="upload.html">Upload</a></li>
+                        <li><a href="contact.html">Kontakt</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="containt_main">
+            <!--------------------- Center --------------------->
+            <!--------------------- Center --------------------->
+            <!--------------------- Center --------------------->
+
+
+
+            <!--div class="ctcol"-->
+            <div id="contact_form" >
+                <div id="infoDiv">    
+
+                    <div style="color:black; font-size: 22px;">Kontakt </div>
+                    <br>
+                    <br>
+
+                    <div  class="kontakt" > Billedkunstner   Susanne Egfjord</div>
+                    <!--    div  class="kontakt">  Susanne Egfjord</div-->
+                    <BR>  
+                    <div  class="kontakt">  Galleri & Atelier SE16</div>
+                    <div  class="kontakt">  Rørholmsgade 16, kld. th.</div>
+                    <div  class="kontakt">  1352 København K</div>
+                    <!--BR>
+                    <div  class="kontakt">  Åbent 1.søndag i hver måned samt Efter Aftale.</div-->
+                    <BR>
+                    <div  class="kontakt">  Mobil (+45) 20 42 16 84</div>
+                    <div  class="kontakt">  egfjord@mail.dk  </div> 
+                </div>
+
+                <br>
+                <iframe width="325" height="250" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=da&amp;geocode=&amp;q=R%C3%B8rholmsgade+16,+kld.+th.+1352+K%C3%B8benhavn+K&amp;aq=&amp;sll=55.689871,12.572257&amp;sspn=0.006785,0.01929&amp;ie=UTF8&amp;hq=&amp;hnear=R%C3%B8rholmsgade+16,+1352+K%C3%B8benhavn+K,+Danmark&amp;t=m&amp;z=14&amp;ll=55.689871,12.572257&amp;output=embed"></iframe><br /><small><a href="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=da&amp;geocode=&amp;q=R%C3%B8rholmsgade+16,+kld.+th.+1352+K%C3%B8benhavn+K&amp;aq=&amp;sll=55.689871,12.572257&amp;sspn=0.006785,0.01929&amp;ie=UTF8&amp;hq=&amp;hnear=R%C3%B8rholmsgade+16,+1352+K%C3%B8benhavn+K,+Danmark&amp;t=m&amp;z=14&amp;ll=55.689871,12.572257" style="color:#0000FF;text-align:left">Vis stort kort</a></small>
+
+                <br>
+                <br>
+                <div style="color:black; font-size: 22px;">E-mail</div>
+                <!--legend>E-mail</legend-->
+                <br>
+                <div id="result"></div>
+                <br>
+                <label for="name"><span>Fra:</span>
+                    <input type="text" name="name" id="name" placeholder="Enter Your Name"  value="Hassan Hedayati" />
+                </label>
+
+                <label for="email"><span>E-mail-adresse:</span>
+                    <input type="text" name="email" id="email" placeholder="Enter Your Email"  value="sohrab41@gmail.com" />
+                </label>
+
+                <label for="phone"><span>Phone:</span>
+                    <input type="text" name="phone" id="phone" placeholder="Phone Number" value="23713447"/>
+                </label>
+
+                <label for="emne"><span>Emne:</span>
+                    <input type="text" name="shortText" id="shortText" placeholder="Your subject" value="Dette er test subject"/>
+                </label>
+
+                <label for="message"><span>Besked:</span>
+                    <textarea id="message" name="message" placeholder="Enter Your Text."  >Please enter Your Text and click on submit. The mail will be sent to egfjord@mail.dk </textarea>
+                </label>
+
+                <label><span>&nbsp;</span>
+                    <button class="submit_btn_class" id="submit_btn" type="button">Send</button>
+                </label>
+            </div>
+            <!--/div-->
+        </div>
+        <!----------------------Center End------------------->
+        <footer>
+            <section class="first">
+                <p style="color:white; font-size: 10px;">&copy;Kunstnergaden</p>
+                <p style="color:white; font-size: 10px;">&copy;Rørholmsgade i Kbh.K</p>
+                <p id="kunstLink">&copy; <a style="color:white; font-size: 10px;"  href="http://www.roerholmsgade.com/">Roerholmsgade KBH</a></p>
+
+            </section>
+            
+            <section>
+                <h3 id='fotterCol1Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol1' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section> 
+
+            <section>
+                <h3 id='fotterCol2Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol2' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>
+
+            <section>
+                <h3 id='fotterCol3Head' class="modalInput" rel="#prompt">nested footer section</h3>
+                <p id='fotterCol3' class="modalInput" rel="#prompt">Morbi diam ipsum, gravida sed scelerisque quis, imperdiet vitae quam. Donec sollicitudin, nunc sit amet convallis sagittis, libero ipsum sollicitudin elit, ac vestibulum ante turpis faucibus tellus.</p>
+            </section>  
+
+            <br class="clearing">        
+        </footer>
+    </content>   
+</body>
+</html>
