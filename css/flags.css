@@ -1,0 +1,22 @@
+/*******************************
+ *** http://flag-sprites.com ***
+ *******************************/  
+a.sweden{
+width:  25px;
+height:	15px;
+background: url(../images/flags_se.png)  no-repeat
+}
+
+.nav_pull_right #se a {
+            background-position:  -5px 9px
+        }
+        
+a.denmark{
+width:  25px;
+height: 15px;
+background: url(../images/flags_dk.png)  no-repeat
+}
+
+.mainHeader .nav_pull_right #dk a {
+            background-position: -5px 9px;
+        }

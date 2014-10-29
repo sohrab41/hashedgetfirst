@@ -1,0 +1,25 @@
+
+/*a, a:visited {
+    text-decoration:none;
+    color: #0000ff;
+    font-weight:400;
+}*/
+.forum-content {
+    width:500px;
+    height:auto;
+    padding:5px 10px;
+}
+.comments-space {
+    width:90%;
+    min-height:50px;
+    height:auto;
+    border-radius:5px;
+    background:#f0f0f0;
+    margin-bottom: 5px;
+    padding: 3px 5px;
+    text-align: justify;
+}
+.remaining-content span {
+    display:none;
+}
+

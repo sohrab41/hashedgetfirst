@@ -1,0 +1,129 @@
+/******** right menu ********/
+#left_first_vertical_nav {
+  /*  border:1px solid #3e4547;  */
+  /*  box-shadow:2px 2px 8px #000000;*/
+    border-radius:0px;
+    -moz-border-radius:0px;
+    -webkit-border-radius:0px;
+    /* height:550px;*/
+}
+#left_first_vertical_nav, #left_first_vertical_nav ul {
+    list-style:disc;/*none;*/
+    padding:0;
+    width:170px;   
+    list-style-type: none;
+}
+#left_first_vertical_nav ul {
+    position: relative;
+    z-index:-1;
+    list-style-type: none;
+}
+#left_first_vertical_nav li {
+    position: relative;
+    z-index:100;
+  
+}
+#left_first_vertical_nav ul li {
+    margin-top:-23px;
+    -moz-transition:  0.4s linear 0.4s;
+    -ms-transition: 0.4s linear 0.4s;
+    -o-transition: 0.4s linear 0.4s;
+    -webkit-transition: 0.4s linear 0.4s;
+    transition: 0.4s linear 0.4s;
+}
+#left_first_vertical_nav li a {
+  /*  background-color:#d4d5d8; */  
+    color:#000;
+    display:block;
+    font-size:14px;
+    font-weight:bold;
+    line-height:48px;/*28px;*/
+    outline:0;
+    padding-left:15px;
+    text-decoration:none;
+}
+#left_first_vertical_nav li a.sub {
+/* background:#efefef url("../images/down.gif") no-repeat;/*Color see: ltcol*/
+}
+#left_first_vertical_nav li a 	+ img {  /*ikke kender*/
+    cursor:pointer;
+    display:none;
+    height:28px;
+    left:110;
+    position:absolute;
+    top:0;
+    width:2px;
+}
+
+#left_first_vertical_nav li a img {/*ikke kender*/
+    border-width:0px;
+    height:24px;
+    line-height:28px;
+    margin-right:8px;
+    vertical-align:middle;
+    width:24px;
+}
+#left_first_vertical_nav li a:hover {
+    background-color:#bcbdc1;
+}
+#left_first_vertical_nav ul li a {
+    background-color:#eee;
+    border-bottom:1px solid #ccc;
+    color:#000;
+    font-size:11px;
+    line-height:22px;
+}
+#left_first_vertical_nav ul li a:hover {
+    background-color:#ddd;
+    color:#444;
+}
+#left_first_vertical_nav ul li a img {
+   background: url("../images/bulb.png") no-repeat;
+    border-width:0px;
+    height:16px;
+    line-height:22px;
+    margin-right:5px;
+    vertical-align:middle;
+    width:16px;
+}
+#left_first_vertical_nav ul li:nth-child(odd) a img {  /*ikke kender*/
+    background:url("../images/bulb2.png") no-repeat;  
+}
+#left_first_vertical_nav a.sub:focus {
+    background:#bcbdc1;
+    outline:0;
+}
+#left_first_vertical_nav a:focus ~ ul li {
+     margin-top:0;
+    -moz-transition:  0.4s linear;
+    -ms-transition: 0.4s linear;
+    -o-transition: 0.4s linears;
+    -webkit-transition: 0.4s linears;
+    transition: 0.4s linear;
+}
+#left_first_vertical_nav a:focus + img, #left_first_vertical_nav a:active + img {
+    display:block;
+}
+#left_first_vertical_nav a.sub:active {
+    background:#bcbdc1;
+    outline:0;
+}
+#left_first_vertical_nav a:active ~ ul li {
+    margin-top:0;
+}
+#left_first_vertical_nav ul:hover li {
+    margin-top:0;
+}
+
+#left_second_vertical_nav {
+    border:1px solid #3e4547;
+    box-shadow:2px 2px 8px #000000;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+}
+#left_second_vertical_nav, #left_second_vertical_nav ul {
+    list-style:none;
+    padding:0;
+    width:150px;
+}
